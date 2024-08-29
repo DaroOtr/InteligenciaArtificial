@@ -9,7 +9,8 @@ public interface INode
     public int GetNodeCost();
 }
 
-public interface INode<Coorninate> : INode where  Coorninate : IEquatable<Coorninate>
+public interface INode<Coorninate> : INode 
+    where  Coorninate : IEquatable<Coorninate>
 {
     public Coorninate GetCoordinate();
     public void SetCoordinate(Coorninate coordinateType);

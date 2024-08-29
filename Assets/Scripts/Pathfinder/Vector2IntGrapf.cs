@@ -48,9 +48,6 @@ public class Vector2IntGrapf<NodeType,pathType>
                 Math.Abs(neighbor.GetCoordinate().x - currentNode.GetCoordinate().x) == 1)
                 currentNode.AddNeighbor(neighbor);
             
-            //if (Math.Abs(neighbor.GetCoordinate().y - currentNode.GetCoordinate().y) == 1 && Math.Abs(neighbor.GetCoordinate().x - currentNode.GetCoordinate().x) == 1)
-            //    currentNode.AddNeighbor(neighbor);
-            //Debug.Log(Traveler.pathfinder_flag);
             if (path.Equals(PathfinderFlags.Dijstra_Pf) || path.Equals(PathfinderFlags.AStar_Pf))
             {
                 if (Math.Abs(neighbor.GetCoordinate().y - currentNode.GetCoordinate().y) == 1 && Math.Abs(neighbor.GetCoordinate().x - currentNode.GetCoordinate().x) == 1)

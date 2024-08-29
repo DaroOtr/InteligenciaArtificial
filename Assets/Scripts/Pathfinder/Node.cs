@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Node<Coordinate> : INode, INode<Coordinate>
-    , IEquatable<Node<Coordinate>> where Coordinate : IEquatable<Coordinate>
+[Serializable]
+public class Node<Coordinate> : INode<Coordinate>, IEquatable<Node<Coordinate>> 
+    where Coordinate : IEquatable<Coordinate>
 {
-    public bool bloqued { get; private set; }
+    private bool bloqued;
     private ICollection<INode<Coordinate>> neighbors = new List<INode<Coordinate>>();
     private Func<Coordinate, float> DistanceTo;
     private Coordinate coordinate;

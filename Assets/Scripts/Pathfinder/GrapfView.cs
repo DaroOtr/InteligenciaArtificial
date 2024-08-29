@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -6,10 +7,11 @@ public class GrapfView : MonoBehaviour
 {
     public Vector2IntGrapf<Node<Vector2Int>,PathfinderFlags> grapf;
     public PathfinderFlags pathfinder_flag;
-
+    public List<Node<Vector2Int>> nodes = new List<Node<Vector2Int>>();
     private void Start()
     {
         grapf = new Vector2IntGrapf<Node<Vector2Int>, PathfinderFlags>(10, 10, pathfinder_flag);
+        nodes = grapf.nodes;
     }
     
     private void OnDrawGizmos()

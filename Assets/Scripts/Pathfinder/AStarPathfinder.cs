@@ -36,7 +36,7 @@ public class AStarPathfinder<NodeType,CoordinateType> : Pathfinder<NodeType,Coor
 
     protected override int MoveToNeighborCost(NodeType A, NodeType B)
     {
-        return (A.GetNodeCost() - B.GetNodeCost());
+        return (A.GetNodeCost() + B.GetNodeCost());
     }
 
     protected override bool NodesEquals(NodeType A, NodeType B)
