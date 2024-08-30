@@ -25,3 +25,10 @@ PathFinding :
 
 Poligono de Thiessen o Diagrama de Voronoi
 algoritmo newtoniano o algoritmo de precision newtoniano (Si no puedo encontrar un balance lo dejo en donde se acerque mas al valance)
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+ECS (Entity Component System)
+
+Cashe Miss : an event in which a system or application makes a request to retrieve data from a cache, but that specific data is not currently in cache memory.
