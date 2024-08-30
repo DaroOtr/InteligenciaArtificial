@@ -296,7 +296,7 @@ MonoBehaviour:
   entityCount: 1000
   velocity: 0.1
   Rotvelocity: 5
-  prefabRotation: {x: 10, y: 0, z: 10}
+  prefabRotation: {x: 10, y: 0, z: 0}
   prefab: {fileID: 6693417738015694382, guid: c3a53d7e4957b61428142333f535810f, type: 3}
 --- !u!1 &1954901166
 GameObject:
