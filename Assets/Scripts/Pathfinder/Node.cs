@@ -14,28 +14,28 @@ namespace Pathfinder
         private TCoordinate _coordinate;
         private int _nodeCost;
         private int _nodeID;
-
-
-        public ICollection<INode<TCoordinate>> GetNeighbors()
-        {
-            return _neighbors;
-        }
-
-        public void AddNeighbor(INode<TCoordinate> neighbor)
-        {
-            if (!_neighbors.Contains(neighbor))
-                _neighbors.Add(neighbor);
-        }
+        
 
         public void AddNeighbor(int neighborID, int transitionCost)
         {
             _transitionCost.TryAdd(neighborID, transitionCost);
         }
 
+        public ICollection<int> GetNeighbors()
+        {
+            return _transitionCost.Keys;
+        }
+
         public int GetNeighborTransitionCost(int neighborID)
         {
             _transitionCost.TryGetValue(neighborID, out var cost);
             return cost;
+        }
+
+        public void SetNeighborTransitionCost(int neighborID,int transitionCost)
+        {
+            if (_transitionCost.ContainsKey(neighborID))
+                _transitionCost[neighborID] = transitionCost;
         }
 
         public void MoveTo(TCoordinate coorninate)
@@ -113,5 +113,7 @@ namespace Pathfinder
         {
             return HashCode.Combine(_coordinate, _nodeCost, _bloqued, _neighbors);
         }
+
+        public bool IsNull { get; }
     }
 }

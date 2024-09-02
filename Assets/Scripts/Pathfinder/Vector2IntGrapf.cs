@@ -3,56 +3,70 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Vector2IntGrapf<NodeType,pathType>
-    where NodeType : INode<Vector2Int>, INode, new()
-    where pathType : Enum
+namespace Pathfinder
 {
-    /*
+    public class Vector2IntGrapf<TNodeType,TCoordinateType,TPathType> : IGrapf<TNodeType,TCoordinateType,TPathType>
+        where TNodeType : INode<TCoordinateType>, INode, new()
+        where TPathType : Enum
+        where TCoordinateType : IEquatable<TCoordinateType>
+    {
+        /*
      * TODO : Hacer un grafo generico
      */
-    public List<NodeType> nodes = new List<NodeType>();
+        public List<TNodeType> nodes = new List<TNodeType>();
+        private Func<List<TNodeType>> _grapfCrationBehaviour;
+        //private Action _grapfCrationBehaviour;
+        private Action _AddNodeNeighborsBehaviour;
+        private TPathType path;
+        private int currentNodeId = 0;
 
-    public Vector2IntGrapf(int x, int y,pathType pathType)
-    {
-        for (int i = 0; i < x; i++)
+        public Vector2IntGrapf(Func<List<TNodeType>> grapfCrationMethod,Action AddNodeNeighborsBehaviour,TPathType pathType)
         {
-            for (int j = 0; j < y; j++)
-            {
-                NodeType node = new NodeType();
-                node.SetCoordinate(new Vector2Int(i, j));
-                node.SetDistanceMethod((Vector2Int other) =>
-                {
-                    return Vector2Int.Distance(node.GetCoordinate(), other);
-                });
-                node.SetNodeCost(Random.Range(0, 10));
-                node.SetBlock(false);
-                nodes.Add(node);
-            }
+            _grapfCrationBehaviour = grapfCrationMethod;
+            _AddNodeNeighborsBehaviour = AddNodeNeighborsBehaviour;
+            path = pathType;
         }
 
-        foreach (NodeType node in nodes)
+        public void InitGrapf()
         {
-            AddNodeNeighbors(node,pathType);
-        }
-    }
-    
-    private void AddNodeNeighbors(NodeType currentNode , pathType path)
-    {
-        foreach (NodeType neighbor in nodes)
-        {
-            if (neighbor.GetCoordinate().x == currentNode.GetCoordinate().x &&
-                Math.Abs(neighbor.GetCoordinate().y - currentNode.GetCoordinate().y) == 1)
-                currentNode.AddNeighbor(neighbor);
-
-            else if (neighbor.GetCoordinate().y == currentNode.GetCoordinate().y &&
-                Math.Abs(neighbor.GetCoordinate().x - currentNode.GetCoordinate().x) == 1)
-                currentNode.AddNeighbor(neighbor);
-            
-            if (path.Equals(PathfinderFlags.Dijstra_Pf) || path.Equals(PathfinderFlags.AStar_Pf))
+            nodes = _grapfCrationBehaviour?.Invoke();
+            foreach (TNodeType node in nodes)
             {
-                if (Math.Abs(neighbor.GetCoordinate().y - currentNode.GetCoordinate().y) == 1 && Math.Abs(neighbor.GetCoordinate().x - currentNode.GetCoordinate().x) == 1)
-                    currentNode.AddNeighbor(neighbor);
+                node.SetNodeID(currentNodeId);
+                currentNodeId++;
             }
+            _AddNodeNeighborsBehaviour?.Invoke();
+        }
+        
+        public void AddNodeNeighbors()
+        {
+            _AddNodeNeighborsBehaviour?.Invoke();
+        }
+
+        public TNodeType GetNode(int NodeId)
+        {
+            foreach (TNodeType node in nodes)
+            {
+                if (node.GetNodeID() == NodeId)
+                    return node;
+            }
+
+            return new TNodeType();
+        }
+
+        public List<TNodeType> GetNodes()
+        {
+            return nodes;
+        }
+
+        public void SetNodeCost(int nodeId,int nodeCost)
+        {
+            GetNode(nodeId).SetNodeCost(nodeCost);
+        }
+
+        public void SetNodeTransitionCost(int fromNodeId, int toNodeId,int transitionCost)
+        {
+            GetNode(fromNodeId).SetNeighborTransitionCost(toNodeId,transitionCost);
         }
     }
 }

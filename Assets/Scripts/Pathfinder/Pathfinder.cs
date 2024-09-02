@@ -49,28 +49,29 @@ public abstract class Pathfinder<TNodeType,TCoordinateType>
                 return GeneratePath(startNode, destinationNode);
             }
 
-            foreach (TNodeType neighbor in GetNeighbors(currentNode))
+            foreach (int neighbor in GetNeighbors(currentNode))
             {
-                if (!nodes.ContainsKey(neighbor) ||
-                IsBloqued(neighbor) ||
-                closedList.Contains(neighbor))
-                {
-                    continue;
-                }
-
-                int tentativeNewAcumulatedCost = 0;
-                tentativeNewAcumulatedCost += nodes[currentNode].AcumulativeCost;
-                tentativeNewAcumulatedCost += MoveToNeighborCost(currentNode, neighbor);
-
-                if (!openList.Contains(neighbor) || tentativeNewAcumulatedCost < nodes[currentNode].AcumulativeCost)
-                {
-                    nodes[neighbor] = (currentNode, tentativeNewAcumulatedCost, Distance(neighbor, destinationNode));
-
-                    if (!openList.Contains(neighbor))
-                    {
-                        openList.Add(neighbor);
-                    }
-                }
+                
+              //  if (!nodes.ContainsKey(neighbor) ||
+              //  IsBloqued(neighbor) ||
+              //  closedList.Contains(neighbor))
+              //  {
+              //      continue;
+              //  }
+              //
+              //  int tentativeNewAcumulatedCost = 0;
+              //  tentativeNewAcumulatedCost += nodes[currentNode].AcumulativeCost;
+              //  tentativeNewAcumulatedCost += MoveToNeighborCost(currentNode, neighbor);
+              //
+              //  if (!openList.Contains(neighbor) || tentativeNewAcumulatedCost < nodes[currentNode].AcumulativeCost)
+              //  {
+              //      nodes[neighbor] = (currentNode, tentativeNewAcumulatedCost, Distance(neighbor, destinationNode));
+              //
+              //      if (!openList.Contains(neighbor))
+              //      {
+              //          openList.Add(neighbor);
+              //      }
+              //  }
             }
         }
         
@@ -92,7 +93,7 @@ public abstract class Pathfinder<TNodeType,TCoordinateType>
         }
     }
 
-    protected abstract ICollection<TNodeType> GetNeighbors(TNodeType node);
+    protected abstract ICollection<int> GetNeighbors(TNodeType node);
 
     protected abstract int Distance(TNodeType A, TNodeType B);
 

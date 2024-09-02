@@ -13,21 +13,15 @@ namespace Pathfinder
             return 0;
         }
 
-        protected override ICollection<TNodeType> GetNeighbors(TNodeType node)
+        protected override ICollection<int> GetNeighbors(TNodeType node)
         {
             if (node == null)
             {
                 Debug.LogError("this node is null");
                 return null;
             }
-            ICollection<TNodeType> neighbors = new List<TNodeType>();
-
-            foreach (TNodeType Neighbor in node.GetNeighbors())
-            {
-                neighbors.Add(Neighbor);
-            }
-
-            return neighbors;
+            
+            return node.GetNeighbors();
         }
 
         protected override bool IsBloqued(TNodeType node)

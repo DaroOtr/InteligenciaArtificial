@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Pathfinder
             return (int)A.CalculateDistanceTo(B.GetCoordinate());
         }
 
-        protected override ICollection<TNodeType> GetNeighbors(TNodeType node)
+        protected override ICollection<int> GetNeighbors(TNodeType node)
         {
         
             if (node == null)
@@ -21,14 +22,8 @@ namespace Pathfinder
                 Debug.LogError("this node is null");
                 return null;
             }
-            ICollection<TNodeType> neighbors = new List<TNodeType>();
-
-            foreach (TNodeType Neighbor in node.GetNeighbors())
-            {
-                neighbors.Add(Neighbor);
-            }
-
-            return neighbors;
+            
+            return node.GetNeighbors();;
         }
 
         protected override bool IsBloqued(TNodeType node)

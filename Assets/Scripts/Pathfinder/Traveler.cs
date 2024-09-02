@@ -18,6 +18,7 @@ public class Traveler : MonoBehaviour
 
     void Start()
     {
+        grapfView.InitGrapf();
         pathfinder_flag = grapfView.pathfinder_flag;
         Debug.Log(pathfinder_flag.ToString());
         switch (pathfinder_flag)
@@ -41,15 +42,12 @@ public class Traveler : MonoBehaviour
         int nodeMinValue = grapfView.grapf.nodes.Count / 2;
         int nodeMaxValue = grapfView.grapf.nodes.Count;
         
-        startNode = new Node<Vector2Int>();
         startNode = grapfView.grapf.nodes[Random.Range(0,nodeMinValue)];
         
-
-        destinationNode = new Node<Vector2Int>();
         destinationNode = grapfView.grapf.nodes[Random.Range(nodeMinValue,nodeMaxValue)];
 
-        path = pathfinder.FindPath(startNode, destinationNode, grapfView.grapf.nodes);
-        StartCoroutine(Move(path));
+        //path = pathfinder.FindPath(startNode, destinationNode, grapfView.grapf.nodes);
+        //StartCoroutine(Move(path));
     }
 
     public IEnumerator Move(List<Node<Vector2Int>> path) 
