@@ -7,28 +7,28 @@ public enum PathfinderFlags
 {
     AStar_Pf,Breadth_Pf,Depth_Pf,Dijstra_Pf
 }
-public abstract class Pathfinder<NodeType,CoordinateType> 
-    where NodeType : INode , INode<CoordinateType>
-    where CoordinateType : IEquatable<CoordinateType>
+public abstract class Pathfinder<TNodeType,TCoordinateType> 
+    where TNodeType : INode , INode<TCoordinateType>
+    where TCoordinateType : IEquatable<TCoordinateType>
 {
-    public List<NodeType> FindPath(NodeType startNode, NodeType destinationNode, ICollection<NodeType> graph)
+    public List<TNodeType> FindPath(TNodeType startNode, TNodeType destinationNode, ICollection<TNodeType> graph)
     {
-        Dictionary<NodeType, (NodeType Parent, int AcumulativeCost, int Heuristic)> nodes =
-            new Dictionary<NodeType, (NodeType Parent, int AcumulativeCost, int Heuristic)>();
+        Dictionary<TNodeType, (TNodeType Parent, int AcumulativeCost, int Heuristic)> nodes =
+            new Dictionary<TNodeType, (TNodeType Parent, int AcumulativeCost, int Heuristic)>();
 
-        foreach (NodeType node in graph)
+        foreach (TNodeType node in graph)
         {
             nodes.Add(node, (default, Random.Range(0,10), Random.Range(0,10)));
         }
 
-        List<NodeType> openList = new List<NodeType>();
-        List<NodeType> closedList = new List<NodeType>();
+        List<TNodeType> openList = new List<TNodeType>();
+        List<TNodeType> closedList = new List<TNodeType>();
 
         openList.Add(startNode);
 
         while (openList.Count > 0)
         {
-            NodeType currentNode = openList[0];
+            TNodeType currentNode = openList[0];
             int currentIndex = 0;
 
             for (int i = 1; i < openList.Count; i++)
@@ -49,7 +49,7 @@ public abstract class Pathfinder<NodeType,CoordinateType>
                 return GeneratePath(startNode, destinationNode);
             }
 
-            foreach (NodeType neighbor in GetNeighbors(currentNode))
+            foreach (TNodeType neighbor in GetNeighbors(currentNode))
             {
                 if (!nodes.ContainsKey(neighbor) ||
                 IsBloqued(neighbor) ||
@@ -76,10 +76,10 @@ public abstract class Pathfinder<NodeType,CoordinateType>
         
         return null;
         
-        List<NodeType> GeneratePath(NodeType startNode, NodeType goalNode)
+        List<TNodeType> GeneratePath(TNodeType startNode, TNodeType goalNode)
         {
-            List<NodeType> path = new List<NodeType>();
-            NodeType currentNode = goalNode;
+            List<TNodeType> path = new List<TNodeType>();
+            TNodeType currentNode = goalNode;
 
             while (!NodesEquals(currentNode, startNode))
             {
@@ -92,13 +92,13 @@ public abstract class Pathfinder<NodeType,CoordinateType>
         }
     }
 
-    protected abstract ICollection<NodeType> GetNeighbors(NodeType node);
+    protected abstract ICollection<TNodeType> GetNeighbors(TNodeType node);
 
-    protected abstract int Distance(NodeType A, NodeType B);
+    protected abstract int Distance(TNodeType A, TNodeType B);
 
-    protected abstract bool NodesEquals(NodeType A, NodeType B);
+    protected abstract bool NodesEquals(TNodeType A, TNodeType B);
 
-    protected abstract int MoveToNeighborCost(NodeType A, NodeType B);
+    protected abstract int MoveToNeighborCost(TNodeType A, TNodeType B);
 
-    protected abstract bool IsBloqued(NodeType node);
+    protected abstract bool IsBloqued(TNodeType node);
 }

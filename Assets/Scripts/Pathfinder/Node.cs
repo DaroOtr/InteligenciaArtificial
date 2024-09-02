@@ -1,90 +1,117 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[Serializable]
-public class Node<Coordinate> : INode<Coordinate>, IEquatable<Node<Coordinate>> 
-    where Coordinate : IEquatable<Coordinate>
+namespace Pathfinder
 {
-    private bool bloqued;
-    private ICollection<INode<Coordinate>> neighbors = new List<INode<Coordinate>>();
-    private Func<Coordinate, float> DistanceTo;
-    private Coordinate coordinate;
-    private int nodeCost;
+    [Serializable]
+    public class Node<TCoordinate> : INode<TCoordinate>, IEquatable<Node<TCoordinate>>
+        where TCoordinate : IEquatable<TCoordinate>
+    {
+        private bool _bloqued;
+        private ICollection<INode<TCoordinate>> _neighbors = new List<INode<TCoordinate>>();
+        private IDictionary<int, int> _transitionCost = new Dictionary<int, int>();
+        private Func<TCoordinate, float> _distanceTo;
+        private TCoordinate _coordinate;
+        private int _nodeCost;
+        private int _nodeID;
 
 
-    public ICollection<INode<Coordinate>> GetNeighbors()
-    {
-        return neighbors;
-    }
+        public ICollection<INode<TCoordinate>> GetNeighbors()
+        {
+            return _neighbors;
+        }
 
-    public void AddNeighbor(INode<Coordinate> neighbor)
-    {
-        neighbors.Add(neighbor);
-    }
-    
-    public void MoveTo(Coordinate coorninate)
-    {
-        coordinate = coorninate;
-    }
+        public void AddNeighbor(INode<TCoordinate> neighbor)
+        {
+            if (!_neighbors.Contains(neighbor))
+                _neighbors.Add(neighbor);
+        }
 
-    public void SetDistanceMethod(Func<Coordinate, float> DistanceTo)
-    {
-        this.DistanceTo = DistanceTo;
-    }
+        public void AddNeighbor(int neighborID, int transitionCost)
+        {
+            _transitionCost.TryAdd(neighborID, transitionCost);
+        }
 
-    public float CalculateDistanceTo(Coordinate coorninate)
-    {
-        return DistanceTo(coorninate);
-    }
+        public int GetNeighborTransitionCost(int neighborID)
+        {
+            _transitionCost.TryGetValue(neighborID, out var cost);
+            return cost;
+        }
 
-    public void SetCoordinate(Coordinate coordinate)
-    {
-        this.coordinate = coordinate;
-    }
+        public void MoveTo(TCoordinate coorninate)
+        {
+            _coordinate = coorninate;
+        }
 
-    public Coordinate GetCoordinate()
-    {
-        return coordinate;
-    }
+        public void SetDistanceMethod(Func<TCoordinate, float> DistanceTo)
+        {
+            _distanceTo = DistanceTo;
+        }
 
-    public bool IsBloqued()
-    {
-        return bloqued;
-    }
+        public float CalculateDistanceTo(TCoordinate coorninate)
+        {
+            return _distanceTo(coorninate);
+        }
 
-    public void SetBlock(bool blockState)
-    {
-        bloqued = blockState;
-    }
+        public void SetCoordinate(TCoordinate coordinate)
+        {
+            _coordinate = coordinate;
+        }
 
-    public void SetNodeCost(int cost)
-    {
-        nodeCost = cost;
-    }
+        public TCoordinate GetCoordinate()
+        {
+            return _coordinate;
+        }
 
-    public int GetNodeCost()
-    {
-        return nodeCost;
-    }
+        public bool IsBloqued()
+        {
+            return _bloqued;
+        }
 
-    public bool Equals(Node<Coordinate> other)
-    {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return EqualityComparer<Coordinate>.Default.Equals(coordinate, other.coordinate) &&
-               nodeCost == other.nodeCost && bloqued == other.bloqued && Equals(neighbors, other.neighbors);
-    }
+        public void SetBlock(bool blockState)
+        {
+            _bloqued = blockState;
+        }
 
-    public override bool Equals(object obj)
-    {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
-        return Equals((Node<Coordinate>)obj);
-    }
+        public void SetNodeCost(int cost)
+        {
+            _nodeCost = cost;
+        }
 
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(coordinate, nodeCost, bloqued, neighbors);
+        public int GetNodeCost()
+        {
+            return _nodeCost;
+        }
+
+        public void SetNodeID(int id)
+        {
+            _nodeID = id;
+        }
+
+        public int GetNodeID()
+        {
+            return _nodeID;
+        }
+
+        public bool Equals(Node<TCoordinate> other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return EqualityComparer<TCoordinate>.Default.Equals(_coordinate, other._coordinate) &&
+                   _nodeCost == other._nodeCost && _bloqued == other._bloqued && Equals(_neighbors, other._neighbors);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Node<TCoordinate>)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_coordinate, _nodeCost, _bloqued, _neighbors);
+        }
     }
 }

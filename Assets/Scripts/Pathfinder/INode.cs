@@ -7,6 +7,10 @@ public interface INode
     public void SetBlock(bool blockState);
     public void SetNodeCost(int cost);
     public int GetNodeCost();
+    public void SetNodeID(int ID);
+    public int GetNodeID();
+    public void AddNeighbor(int neighborID,int transitionCost);
+    public int GetNeighborTransitionCost(int neighborID);
 }
 
 public interface INode<Coorninate> : INode 

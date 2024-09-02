@@ -2,45 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AStarPathfinder<NodeType,CoordinateType> : Pathfinder<NodeType,CoordinateType>
-    where NodeType : INode , INode<CoordinateType>
-    where CoordinateType : IEquatable<CoordinateType>
+namespace Pathfinder
 {
-    protected override int Distance(NodeType A, NodeType B)
+    public class AStarPathfinder<TNodeType,TCoordinateType> : Pathfinder<TNodeType,TCoordinateType>
+        where TNodeType : INode<TCoordinateType>
+        where TCoordinateType : IEquatable<TCoordinateType>
     {
-        return (int)A.CalculateDistanceTo(B.GetCoordinate());
-    }
+        protected override int Distance(TNodeType A, TNodeType B)
+        {
+            return (int)A.CalculateDistanceTo(B.GetCoordinate());
+        }
 
-    protected override ICollection<NodeType> GetNeighbors(NodeType node)
-    {
+        protected override ICollection<TNodeType> GetNeighbors(TNodeType node)
+        {
         
-        if (node == null)
-        {
-            Debug.LogError("this node is null");
-            return null;
+            if (node == null)
+            {
+                Debug.LogError("this node is null");
+                return null;
+            }
+            ICollection<TNodeType> neighbors = new List<TNodeType>();
+
+            foreach (TNodeType Neighbor in node.GetNeighbors())
+            {
+                neighbors.Add(Neighbor);
+            }
+
+            return neighbors;
         }
-        ICollection<NodeType> neighbors = new List<NodeType>();
 
-        foreach (NodeType Neighbor in node.GetNeighbors())
+        protected override bool IsBloqued(TNodeType node)
         {
-            neighbors.Add(Neighbor);
+            return node.IsBloqued();
         }
 
-        return neighbors;
-    }
+        protected override int MoveToNeighborCost(TNodeType A, TNodeType B)
+        {
+            return (A.GetNodeCost() + B.GetNodeCost());
+        }
 
-    protected override bool IsBloqued(NodeType node)
-    {
-        return node.IsBloqued();
-    }
-
-    protected override int MoveToNeighborCost(NodeType A, NodeType B)
-    {
-        return (A.GetNodeCost() + B.GetNodeCost());
-    }
-
-    protected override bool NodesEquals(NodeType A, NodeType B)
-    {
-        return A.Equals(B);
+        protected override bool NodesEquals(TNodeType A, TNodeType B)
+        {
+            return A.Equals(B);
+        }
     }
 }

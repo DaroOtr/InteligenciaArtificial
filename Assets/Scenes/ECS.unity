@@ -293,7 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e66e94b403307c40a375a67303e900e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityCount: 1000
+  entityCount: 10000
   velocity: 0.1
   Rotvelocity: 5
   prefabRotation: {x: 10, y: 0, z: 0}
