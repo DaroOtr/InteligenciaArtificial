@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pathfinder
 {
     public class DijstraPathfinder<TNodeType,TCoordinateType> : Pathfinder<TNodeType,TCoordinateType>
-        where TNodeType : INode , INode<TCoordinateType>
+        where TNodeType : INode<TCoordinateType>
         where TCoordinateType : IEquatable<TCoordinateType>
     {
         protected override int Distance(TNodeType A, TNodeType B)
