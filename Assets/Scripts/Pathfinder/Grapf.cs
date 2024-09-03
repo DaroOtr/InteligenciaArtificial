@@ -13,14 +13,12 @@ namespace Pathfinder
         public List<TNodeType> Nodes = new List<TNodeType>();
         private Func<List<TNodeType>> _grapfCrationBehaviour;
         private Action _addNodeNeighborsBehaviour;
-        private PathfinderFlags path;
         private int _currentNodeId = 0;
 
-        public Grapf(Func<List<TNodeType>> grapfCrationMethod,Action addNodeNeighborsBehaviour,PathfinderFlags pathType)
+        public Grapf(Func<List<TNodeType>> grapfCrationMethod,Action addNodeNeighborsBehaviour)
         {
             _grapfCrationBehaviour = grapfCrationMethod;
             _addNodeNeighborsBehaviour = addNodeNeighborsBehaviour;
-            path = pathType;
         }
 
         public void InitGrapf()

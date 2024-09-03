@@ -61,7 +61,7 @@ namespace Pathfinder
                                 }
                             }
                         }
-                    }, pathfinder_flag);
+                    });
             grapf.InitGrapf();
             foreach (Node<Vector2Int> node in grapf.GetNodes())
             {
