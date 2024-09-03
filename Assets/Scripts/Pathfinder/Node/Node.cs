@@ -8,8 +8,7 @@ namespace Pathfinder.Node
         where TCoordinate : IEquatable<TCoordinate>
     {
         private bool _bloqued;
-        private ICollection<INode<TCoordinate>> _neighbors = new List<INode<TCoordinate>>();
-        private IDictionary<int, int> _transitionCost = new Dictionary<int, int>();
+        private IDictionary<int, int> _neighbors = new Dictionary<int, int>();
         private Func<TCoordinate, float> _distanceTo;
         private TCoordinate _coordinate;
         private int _nodeCost;
@@ -18,24 +17,24 @@ namespace Pathfinder.Node
 
         public void AddNeighbor(int neighborID, int transitionCost)
         {
-            _transitionCost.TryAdd(neighborID, transitionCost);
+            _neighbors.TryAdd(neighborID, transitionCost);
         }
 
         public ICollection<int> GetNeighbors()
         {
-            return _transitionCost.Keys;
+            return _neighbors.Keys;
         }
 
         public int GetNeighborTransitionCost(int neighborID)
         {
-            _transitionCost.TryGetValue(neighborID, out var cost);
+            _neighbors.TryGetValue(neighborID, out var cost);
             return cost;
         }
 
         public void SetNeighborTransitionCost(int neighborID,int transitionCost)
         {
-            if (_transitionCost.ContainsKey(neighborID))
-                _transitionCost[neighborID] = transitionCost;
+            if (_neighbors.ContainsKey(neighborID))
+                _neighbors[neighborID] = transitionCost;
         }
 
         public void MoveTo(TCoordinate coorninate)
