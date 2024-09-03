@@ -12,6 +12,7 @@ namespace Pathfinder
         public List<Node<Vector2Int>> nodes = new List<Node<Vector2Int>>();
         public int grapfWidth;
         public int grapfHeight;
+        public int grapfDepth;
         
         public void InitGrapf()
         {

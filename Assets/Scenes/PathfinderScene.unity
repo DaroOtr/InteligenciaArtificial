@@ -247,7 +247,8 @@ MonoBehaviour:
   pathfinder_flag: 0
   nodes: []
   grapfWidth: 10
-  grapfHeight: 10
+  grapfHeight: 1
+  grapfDepth: 10
 --- !u!4 &815766765
 Transform:
   m_ObjectHideFlags: 0
