@@ -17,13 +17,13 @@ namespace Pathfinder.Node
         public void SetNeighborTransitionCost(int neighborID,int transitionCost);
     }
 
-    public interface INode<Coorninate> : INode 
-        where  Coorninate : IEquatable<Coorninate>
+    public interface INode<TCoorninate> : INode 
+        where  TCoorninate : IEquatable<TCoorninate>
     {
-        public Coorninate GetCoordinate();
-        public void SetCoordinate(Coorninate coordinateType);
-        public void MoveTo(Coorninate coorninate);
-        public float CalculateDistanceTo(Coorninate coorninate);
-        public void SetDistanceMethod(Func<Coorninate, float> DistanceTo);
+        public TCoorninate GetCoordinate();
+        public void SetCoordinate(TCoorninate coordinateType);
+        public void MoveTo(TCoorninate coorninate);
+        public float CalculateDistanceTo(TCoorninate coorninate);
+        public void SetDistanceMethod(Func<TCoorninate, float> DistanceTo);
     }
 }
