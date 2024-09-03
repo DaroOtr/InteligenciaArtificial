@@ -8,14 +8,24 @@ namespace Pathfinder.Grapf
 {
     public class GrapfView : MonoBehaviour
     {
-        public Grapf<Node<Vector2Int>> Grapf;
-        public AlgorithmType _algorithmType;
-        public List<Node<Vector2Int>> nodes = new List<Node<Vector2Int>>();
-        public int grapfWidth;
-        public int grapfHeight;
-        public int grapfDepth;
-        public int nodeSeparation;
-        
+        public Grapf<Node<Vector2Int>> Grapf { get; private set; }
+        public AlgorithmType _algorithmType { get; private set; }
+        public List<Node<Vector2Int>> nodes  { get; private set; }
+        private int _grapfWidth;
+        private int _grapfHeight;
+        public int _nodeSeparation { get; private set; }
+
+        private bool _isGrapfInitialized = false;
+
+        public void SetGrapfCreationParams(int grapfWidth,int grapfHeight,int nodeSeparation)
+        {
+            _grapfWidth = grapfWidth;
+            _grapfHeight = grapfHeight;
+            _nodeSeparation = nodeSeparation;
+            nodes = new List<Node<Vector2Int>>();
+            _algorithmType = AlgorithmType.AStar_Pf;
+        }
+
         public void InitGrapf()
         {
             Grapf = new Grapf<Node<Vector2Int>>();
@@ -23,9 +33,9 @@ namespace Pathfinder.Grapf
                 (() =>
                     {
                         List<Node<Vector2Int>> _nodes = new List<Node<Vector2Int>>();
-                        for (int i = 0; i < grapfWidth; i++)
+                        for (int i = 0; i < _grapfWidth; i++)
                         {
-                            for (int j = 0; j < grapfHeight; j++)
+                            for (int j = 0; j < _grapfHeight; j++)
                             {
                                 Node<Vector2Int> node = new Node<Vector2Int>();
                                 node.SetCoordinate(new Vector2Int(i ,j ));
@@ -73,11 +83,12 @@ namespace Pathfinder.Grapf
             {
                 nodes.Add(node);
             }
+            _isGrapfInitialized = true;
         }
 
         private void OnDrawGizmos()
         {
-            if (!Application.isPlaying)
+            if (!Application.isPlaying || !_isGrapfInitialized)
                 return;
         
             foreach (Node<Vector2Int> node in Grapf.Nodes)
@@ -85,13 +96,13 @@ namespace Pathfinder.Grapf
                 if (node == null)
                     return;
             
-                Vector3 nodeCordinates = new Vector3(node.GetCoordinate().x * nodeSeparation, node.GetCoordinate().y * nodeSeparation);
+                Vector3 nodeCordinates = new Vector3(node.GetCoordinate().x * _nodeSeparation, node.GetCoordinate().y * _nodeSeparation);
                 
                 foreach (int neighbor in node.GetNeighbors())
                 {
                     Gizmos.color = Color.white;
                     Vector2Int neighborCordinates = Grapf.GetNode(neighbor).GetCoordinate();
-                    Gizmos.DrawLine(nodeCordinates,new Vector3(neighborCordinates.x * nodeSeparation,neighborCordinates.y * nodeSeparation));
+                    Gizmos.DrawLine(nodeCordinates,new Vector3(neighborCordinates.x * _nodeSeparation,neighborCordinates.y * _nodeSeparation));
                 } 
             }
         }

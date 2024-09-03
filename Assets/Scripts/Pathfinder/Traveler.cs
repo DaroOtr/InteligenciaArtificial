@@ -5,6 +5,7 @@ using Pathfinder.Algorithm;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Pathfinder
@@ -20,7 +21,14 @@ namespace Pathfinder
         private Node<Vector2Int> _startNode;
         private Node<Vector2Int> _destinationNode;
 
+        private bool _isTravelerInitialized = false;
+
         void Start()
+        {
+            //InitTraveler();
+        }
+
+        public void InitTraveler()
         {
             grapfView.InitGrapf();
             _algorithmType = grapfView._algorithmType;
@@ -42,31 +50,32 @@ namespace Pathfinder
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
+            
             int nodeMinValue = grapfView.Grapf.Nodes.Count / 2;
             int nodeMaxValue = grapfView.Grapf.Nodes.Count;
-
+            
             _startNode = grapfView.Grapf.Nodes[Random.Range(0, nodeMinValue)];
-
+            
             _destinationNode = grapfView.Grapf.Nodes[Random.Range(nodeMinValue, nodeMaxValue)];
-
+            
             path = _pathfinder.FindPath(_startNode, _destinationNode, grapfView.Grapf);
             StartCoroutine(Move(path));
+            _isTravelerInitialized = true;
         }
 
         public IEnumerator Move(List<Node<Vector2Int>> path)
         {
             foreach (Node<Vector2Int> node in path)
             {
-                transform.position = new Vector3(node.GetCoordinate().x * grapfView.nodeSeparation,
-                    node.GetCoordinate().y * grapfView.nodeSeparation);
+                transform.position = new Vector3(node.GetCoordinate().x * grapfView._nodeSeparation,
+                    node.GetCoordinate().y * grapfView._nodeSeparation);
                 yield return new WaitForSeconds(1.0f);
             }
         }
 
         private void OnDrawGizmos()
         {
-            if (!Application.isPlaying)
+            if (!Application.isPlaying || !_isTravelerInitialized)
                 return;
 
 
@@ -101,8 +110,8 @@ namespace Pathfinder
                         break;
                 }
 
-                Vector3 nodeCordinates = new Vector3(node.GetCoordinate().x * grapfView.nodeSeparation,
-                    node.GetCoordinate().y * grapfView.nodeSeparation);
+                Vector3 nodeCordinates = new Vector3(node.GetCoordinate().x * grapfView._nodeSeparation,
+                    node.GetCoordinate().y * grapfView._nodeSeparation);
                 Gizmos.DrawWireSphere(nodeCordinates, 0.2f);
             }
         }
