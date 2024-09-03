@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 namespace Pathfinder.Grapf
 {
     public interface IGrapf<TNodeType> : ICollection<TNodeType>
     {
+        public void SetgrapfParameters(Func<List<TNodeType>> grapfCrationMethod,Action addNodeNeighborsBehaviour);
         public void InitGrapf();
         public void AddNodeNeighbors();
         public TNodeType GetNode(int nodeId);

@@ -17,7 +17,7 @@ namespace Pathfinder
         private Pathfinder<Node<Vector2Int>, Vector2Int> _pathfinder;
         List<Node<Vector2Int>> path = new List<Node<Vector2Int>>();
 
-        private Node<Vector2Int> _startNode; 
+        private Node<Vector2Int> _startNode;
         private Node<Vector2Int> _destinationNode;
 
         void Start()
@@ -42,26 +42,28 @@ namespace Pathfinder
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        
+
             int nodeMinValue = grapfView.Grapf.Nodes.Count / 2;
             int nodeMaxValue = grapfView.Grapf.Nodes.Count;
-        
-            _startNode = grapfView.Grapf.Nodes[Random.Range(0,nodeMinValue)];
-        
-            _destinationNode = grapfView.Grapf.Nodes[Random.Range(nodeMinValue,nodeMaxValue)];
+
+            _startNode = grapfView.Grapf.Nodes[Random.Range(0, nodeMinValue)];
+
+            _destinationNode = grapfView.Grapf.Nodes[Random.Range(nodeMinValue, nodeMaxValue)];
 
             path = _pathfinder.FindPath(_startNode, _destinationNode, grapfView.Grapf);
             StartCoroutine(Move(path));
         }
 
-        public IEnumerator Move(List<Node<Vector2Int>> path) 
+        public IEnumerator Move(List<Node<Vector2Int>> path)
         {
             foreach (Node<Vector2Int> node in path)
             {
-                transform.position = new Vector3(node.GetCoordinate().x, node.GetCoordinate().y);
+                transform.position = new Vector3(node.GetCoordinate().x * grapfView.nodeSeparation,
+                    node.GetCoordinate().y * grapfView.nodeSeparation);
                 yield return new WaitForSeconds(1.0f);
             }
         }
+
         private void OnDrawGizmos()
         {
             if (!Application.isPlaying)
@@ -79,14 +81,29 @@ namespace Pathfinder
                         Gizmos.color = Color.black;
                         break;
                     case var _ when path.Contains(node):
-                        Gizmos.color = Color.yellow;
+                        Gizmos.color = Color.gray;
+                        break;
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.NormalTerrain):
+                        Gizmos.color = Color.green;
+                        break;
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.DificultTerrain):
+                        Gizmos.color = Color.Lerp(Color.green,Color.yellow,0.7f);
+                        break;
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.UrbanCenter):
+                        Gizmos.color = Color.magenta;
+                        break;
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.Mine):
+                        Gizmos.color = Color.cyan;
                         break;
                     default:
-                        Gizmos.color = node.IsBloqued() ? Color.red : Color.green;
+                        if (node.IsBloqued())
+                            Gizmos.color = Color.red;
                         break;
                 }
-                Vector3 nodeCordinates = new Vector3(node.GetCoordinate().x, node.GetCoordinate().y);
-                Gizmos.DrawWireSphere(nodeCordinates,0.2f);
+
+                Vector3 nodeCordinates = new Vector3(node.GetCoordinate().x * grapfView.nodeSeparation,
+                    node.GetCoordinate().y * grapfView.nodeSeparation);
+                Gizmos.DrawWireSphere(nodeCordinates, 0.2f);
             }
         }
     }

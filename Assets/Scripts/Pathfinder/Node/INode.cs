@@ -15,6 +15,8 @@ namespace Pathfinder.Node
         public ICollection<int> GetNeighbors();
         public int GetNeighborTransitionCost(int neighborID);
         public void SetNeighborTransitionCost(int neighborID,int transitionCost);
+        public void SetNodeType(RtsNodeType nodeType);
+        public RtsNodeType GetNodeType();
     }
 
     public interface INode<TCoorninate> : INode 

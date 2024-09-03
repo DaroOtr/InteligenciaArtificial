@@ -1,4 +1,4 @@
-Comando para volar los Namespace sin utilizar : Ctrl + R +G
+Comando para volar los Namespace sin utilizar : Ctrl + R + G
 Comando Guardar: Ctrl + S
 Comando Para Guardar Todo : Ctrl + Shift + S
 Comando Para Justificar el codigo : Ctrl + K + D

@@ -13,6 +13,7 @@ namespace Pathfinder.Node
         private TCoordinate _coordinate;
         private int _nodeCost;
         private int _nodeID;
+        private int _nodeType;
         
 
         public void AddNeighbor(int neighborID, int transitionCost)
@@ -35,6 +36,16 @@ namespace Pathfinder.Node
         {
             if (_neighbors.ContainsKey(neighborID))
                 _neighbors[neighborID] = transitionCost;
+        }
+
+        public void SetNodeType(RtsNodeType nodeType)
+        {
+            _nodeType = (int)nodeType;
+        }
+
+        public RtsNodeType GetNodeType()
+        {
+            return (RtsNodeType)_nodeType;
         }
 
         public void MoveTo(TCoordinate coorninate)
