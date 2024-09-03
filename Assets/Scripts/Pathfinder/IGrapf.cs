@@ -1,8 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Pathfinder
 {
-    public interface IGrapf<TNodeType,TCoordinateType,TPathType>
+    public interface IGrapf<TNodeType> : ICollection<TNodeType>
     {
         public void InitGrapf();
         public void AddNodeNeighbors();

@@ -7,7 +7,7 @@ namespace Pathfinder
 {
     public class GrapfView : MonoBehaviour
     {
-        public Vector2IntGrapf<Node<Vector2Int>,Vector2Int,PathfinderFlags> grapf;
+        public Grapf<Node<Vector2Int>> grapf;
         public PathfinderFlags pathfinder_flag;
         public List<Node<Vector2Int>> nodes = new List<Node<Vector2Int>>();
         public int grapfWidth;
@@ -15,7 +15,7 @@ namespace Pathfinder
         
         public void InitGrapf()
         {
-            grapf = new Vector2IntGrapf<Node<Vector2Int>,Vector2Int, PathfinderFlags>
+            grapf = new Grapf<Node<Vector2Int>>
                 (() =>
                     {
                         List<Node<Vector2Int>> _nodes = new List<Node<Vector2Int>>();
@@ -74,7 +74,7 @@ namespace Pathfinder
             if (!Application.isPlaying)
                 return;
         
-            foreach (Node<Vector2Int> node in grapf.nodes)
+            foreach (Node<Vector2Int> node in grapf.Nodes)
             {
                 if (node == null)
                     return;

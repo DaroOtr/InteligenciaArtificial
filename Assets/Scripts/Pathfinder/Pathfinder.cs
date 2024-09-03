@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Pathfinder;
 using Random = UnityEngine.Random;
 
 [Serializable]
@@ -11,7 +12,7 @@ public abstract class Pathfinder<TNodeType,TCoordinateType>
     where TNodeType : INode , INode<TCoordinateType>
     where TCoordinateType : IEquatable<TCoordinateType>
 {
-    public List<TNodeType> FindPath(TNodeType startNode, TNodeType destinationNode, ICollection<TNodeType> graph)
+    public List<TNodeType> FindPath(TNodeType startNode, TNodeType destinationNode, IGrapf<TNodeType> graph)
     {
         Dictionary<TNodeType, (TNodeType Parent, int AcumulativeCost, int Heuristic)> nodes =
             new Dictionary<TNodeType, (TNodeType Parent, int AcumulativeCost, int Heuristic)>();
@@ -21,6 +22,8 @@ public abstract class Pathfinder<TNodeType,TCoordinateType>
             nodes.Add(node, (default, Random.Range(0,10), Random.Range(0,10)));
         }
 
+        // TODO : Pasar a que los identifique con los ID
+        
         List<TNodeType> openList = new List<TNodeType>();
         List<TNodeType> closedList = new List<TNodeType>();
 
@@ -48,30 +51,30 @@ public abstract class Pathfinder<TNodeType,TCoordinateType>
             {
                 return GeneratePath(startNode, destinationNode);
             }
-
+            
             foreach (int neighbor in GetNeighbors(currentNode))
             {
                 
-              //  if (!nodes.ContainsKey(neighbor) ||
-              //  IsBloqued(neighbor) ||
-              //  closedList.Contains(neighbor))
-              //  {
-              //      continue;
-              //  }
-              //
-              //  int tentativeNewAcumulatedCost = 0;
-              //  tentativeNewAcumulatedCost += nodes[currentNode].AcumulativeCost;
-              //  tentativeNewAcumulatedCost += MoveToNeighborCost(currentNode, neighbor);
-              //
-              //  if (!openList.Contains(neighbor) || tentativeNewAcumulatedCost < nodes[currentNode].AcumulativeCost)
-              //  {
-              //      nodes[neighbor] = (currentNode, tentativeNewAcumulatedCost, Distance(neighbor, destinationNode));
-              //
-              //      if (!openList.Contains(neighbor))
-              //      {
-              //          openList.Add(neighbor);
-              //      }
-              //  }
+              if (!nodes.ContainsKey(graph.GetNode(neighbor)) ||
+              IsBloqued(graph.GetNode(neighbor)) ||
+              closedList.Contains(graph.GetNode(neighbor)))
+              {
+                  continue;
+              }
+              
+              int tentativeNewAcumulatedCost = 0;
+              tentativeNewAcumulatedCost += nodes[currentNode].AcumulativeCost;
+              tentativeNewAcumulatedCost += MoveToNeighborCost(currentNode, graph.GetNode(neighbor));
+              
+              if (!openList.Contains(graph.GetNode(neighbor)) || tentativeNewAcumulatedCost < nodes[currentNode].AcumulativeCost)
+              {
+                  nodes[graph.GetNode(neighbor)] = (currentNode, tentativeNewAcumulatedCost, Distance(graph.GetNode(neighbor), destinationNode));
+              
+                  if (!openList.Contains(graph.GetNode(neighbor)))
+                  {
+                      openList.Add(graph.GetNode(neighbor));
+                  }
+              }
             }
         }
         

@@ -39,15 +39,15 @@ public class Traveler : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
 
-        int nodeMinValue = grapfView.grapf.nodes.Count / 2;
-        int nodeMaxValue = grapfView.grapf.nodes.Count;
+        int nodeMinValue = grapfView.grapf.Nodes.Count / 2;
+        int nodeMaxValue = grapfView.grapf.Nodes.Count;
         
-        startNode = grapfView.grapf.nodes[Random.Range(0,nodeMinValue)];
+        startNode = grapfView.grapf.Nodes[Random.Range(0,nodeMinValue)];
         
-        destinationNode = grapfView.grapf.nodes[Random.Range(nodeMinValue,nodeMaxValue)];
+        destinationNode = grapfView.grapf.Nodes[Random.Range(nodeMinValue,nodeMaxValue)];
 
-        //path = pathfinder.FindPath(startNode, destinationNode, grapfView.grapf.nodes);
-        //StartCoroutine(Move(path));
+        path = pathfinder.FindPath(startNode, destinationNode, grapfView.grapf);
+        StartCoroutine(Move(path));
     }
 
     public IEnumerator Move(List<Node<Vector2Int>> path) 
@@ -64,7 +64,7 @@ public class Traveler : MonoBehaviour
             return;
 
 
-        foreach (Node<Vector2Int> node in grapfView.grapf.nodes)
+        foreach (Node<Vector2Int> node in grapfView.grapf.Nodes)
         {
             switch (node)
             {
