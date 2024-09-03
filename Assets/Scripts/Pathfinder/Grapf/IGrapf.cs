@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 
-namespace Pathfinder
+namespace Pathfinder.Grapf
 {
     public interface IGrapf<TNodeType> : ICollection<TNodeType>
     {

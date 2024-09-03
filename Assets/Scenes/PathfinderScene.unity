@@ -244,11 +244,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9505ac3f90de150418590939da61c3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathfinder_flag: 0
+  _algorithmType: 0
   nodes: []
   grapfWidth: 10
-  grapfHeight: 1
-  grapfDepth: 10
+  grapfHeight: 10
+  grapfDepth: 0
 --- !u!4 &815766765
 Transform:
   m_ObjectHideFlags: 0

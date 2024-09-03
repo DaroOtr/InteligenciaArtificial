@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pathfinder.Node;
 using UnityEngine;
 
-namespace Pathfinder
+namespace Pathfinder.Algorithm
 {
     public class DijstraPathfinder<TNodeType,TCoordinateType> : Pathfinder<TNodeType,TCoordinateType>
         where TNodeType : INode<TCoordinateType>

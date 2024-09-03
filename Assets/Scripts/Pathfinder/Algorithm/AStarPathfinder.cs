@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pathfinder.Node;
 using UnityEngine;
 
-namespace Pathfinder
+namespace Pathfinder.Algorithm
 {
-    public class DepthFirstPathfinder<TNodeType,TCoordinateType> : Pathfinder<TNodeType,TCoordinateType>
+    public class AStarPathfinder<TNodeType,TCoordinateType> : Pathfinder<TNodeType,TCoordinateType>
         where TNodeType : INode<TCoordinateType>
         where TCoordinateType : IEquatable<TCoordinateType>
     {
         protected override int Distance(TNodeType A, TNodeType B)
         {
-            return 0;
+            return (int)A.CalculateDistanceTo(B.GetCoordinate());
         }
 
         protected override ICollection<int> GetNeighbors(TNodeType node)
         {
+        
             if (node == null)
             {
                 Debug.LogError("this node is null");
                 return null;
             }
             
-            return node.GetNeighbors();
+            return node.GetNeighbors();;
         }
 
         protected override bool IsBloqued(TNodeType node)
@@ -31,7 +33,7 @@ namespace Pathfinder
 
         protected override int MoveToNeighborCost(TNodeType A, TNodeType B)
         {
-            return 0;
+            return (A.GetNodeCost() + B.GetNodeCost());
         }
 
         protected override bool NodesEquals(TNodeType A, TNodeType B)

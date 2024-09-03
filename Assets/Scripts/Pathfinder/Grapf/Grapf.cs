@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Random = UnityEngine.Random;
+using Pathfinder.Node;
 
-namespace Pathfinder
+namespace Pathfinder.Grapf
 {
     public class Grapf<TNodeType> : IGrapf<TNodeType>
         where TNodeType : INode, new()

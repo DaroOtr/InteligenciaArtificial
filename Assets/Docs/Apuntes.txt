@@ -1,3 +1,15 @@
+Comando para volar los Namespace sin utilizar : Ctrl + R +G
+Comando Guardar: Ctrl + S
+Comando Para Guardar Todo : Ctrl + Shift + S
+Comando Para Justificar el codigo : Ctrl + K + D
+Comando Para Comentar el Codigo : Ctrl + K + C
+Comando Para Buscar en la Solucion : Ctrl + T
+Comando Para Buscar en el archivo : Ctrl + F
+Comando Para Cambiar el nombre de un objeto en toda la solucion : Ctrl + R + R
+Comando Para Cerrar una bracket : Ctrl + M + M
+Comando Para Cerrar todas las bracket : Ctrl + M + O
+
+
 Grafo es una susecion lineal de nodos 
 
 HyperGrafo : es una convinacion de nodos donde todos se conectan con todos

@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using Pathfinder.Algorithm;
+using Pathfinder.Node;
 using UnityEngine;
 
-namespace Pathfinder
+namespace Pathfinder.Grapf
 {
     public class GrapfView : MonoBehaviour
     {
-        public Grapf<Node<Vector2Int>> grapf;
-        public PathfinderFlags pathfinder_flag;
+        public Grapf<Node<Vector2Int>> Grapf;
+        public AlgorithmType _algorithmType;
         public List<Node<Vector2Int>> nodes = new List<Node<Vector2Int>>();
         public int grapfWidth;
         public int grapfHeight;
@@ -16,7 +17,7 @@ namespace Pathfinder
         
         public void InitGrapf()
         {
-            grapf = new Grapf<Node<Vector2Int>>
+            Grapf = new Grapf<Node<Vector2Int>>
                 (() =>
                     {
                         List<Node<Vector2Int>> _nodes = new List<Node<Vector2Int>>();
@@ -39,9 +40,9 @@ namespace Pathfinder
                     },
                     () =>
                     {
-                        foreach (Node<Vector2Int> currentNode in grapf.GetNodes())
+                        foreach (Node<Vector2Int> currentNode in Grapf.GetNodes())
                         {
-                            foreach (Node<Vector2Int> neighbor in grapf.GetNodes())
+                            foreach (Node<Vector2Int> neighbor in Grapf.GetNodes())
                             {
                                 if (neighbor.GetCoordinate().x == currentNode.GetCoordinate().x &&
                                     Math.Abs(neighbor.GetCoordinate().y - currentNode.GetCoordinate().y) == 1)
@@ -55,7 +56,7 @@ namespace Pathfinder
                                     currentNode.AddNeighbor(neighbor.GetNodeID(),0);
                                 }
                                 
-                                if (pathfinder_flag.Equals(PathfinderFlags.Dijstra_Pf) || pathfinder_flag.Equals(PathfinderFlags.AStar_Pf))
+                                if (_algorithmType.Equals(AlgorithmType.Dijstra_Pf) || _algorithmType.Equals(AlgorithmType.AStar_Pf))
                                 {
                                     if (Math.Abs(neighbor.GetCoordinate().y - currentNode.GetCoordinate().y) == 1 && Math.Abs(neighbor.GetCoordinate().x - currentNode.GetCoordinate().x) == 1)
                                         currentNode.AddNeighbor(neighbor.GetNodeID(),0);
@@ -63,8 +64,8 @@ namespace Pathfinder
                             }
                         }
                     });
-            grapf.InitGrapf();
-            foreach (Node<Vector2Int> node in grapf.GetNodes())
+            Grapf.InitGrapf();
+            foreach (Node<Vector2Int> node in Grapf.GetNodes())
             {
                 nodes.Add(node);
             }
@@ -75,7 +76,7 @@ namespace Pathfinder
             if (!Application.isPlaying)
                 return;
         
-            foreach (Node<Vector2Int> node in grapf.Nodes)
+            foreach (Node<Vector2Int> node in Grapf.Nodes)
             {
                 if (node == null)
                     return;
@@ -85,7 +86,7 @@ namespace Pathfinder
                 foreach (int neighbor in node.GetNeighbors())
                 {
                     Gizmos.color = Color.white;
-                    Vector2Int neighborCordinates = grapf.GetNode(neighbor).GetCoordinate();
+                    Vector2Int neighborCordinates = Grapf.GetNode(neighbor).GetCoordinate();
                     Gizmos.DrawLine(nodeCordinates,new Vector3(neighborCordinates.x,neighborCordinates.y));
                 } 
             }

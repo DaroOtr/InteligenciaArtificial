@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Pathfinder.Node;
 using UnityEngine;
 
-namespace Pathfinder
+namespace Pathfinder.Algorithm
 {
-    public class BreadthPathfinder<TNodeType,TCoordinateType> : Pathfinder<TNodeType,TCoordinateType>
+    public class DepthFirstPathfinder<TNodeType,TCoordinateType> : Pathfinder<TNodeType,TCoordinateType>
         where TNodeType : INode<TCoordinateType>
         where TCoordinateType : IEquatable<TCoordinateType>
     {
@@ -21,14 +21,8 @@ namespace Pathfinder
                 Debug.LogError("this node is null");
                 return null;
             }
-            ICollection<int> neighbors = new List<int>();
-
-            foreach (int Neighbor in node.GetNeighbors().Reverse())
-            {
-                neighbors.Add(Neighbor);
-            }
             
-            return  neighbors;
+            return node.GetNeighbors();
         }
 
         protected override bool IsBloqued(TNodeType node)

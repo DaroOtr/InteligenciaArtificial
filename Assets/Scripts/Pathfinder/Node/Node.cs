@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pathfinder
+namespace Pathfinder.Node
 {
     [Serializable]
     public class Node<TCoordinate> : INode<TCoordinate>, IEquatable<Node<TCoordinate>>
@@ -113,7 +113,5 @@ namespace Pathfinder
         {
             return HashCode.Combine(_coordinate, _nodeCost, _bloqued, _neighbors);
         }
-
-        public bool IsNull { get; }
     }
 }
