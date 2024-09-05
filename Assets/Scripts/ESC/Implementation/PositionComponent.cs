@@ -1,13 +1,18 @@
-public class PositionComponent : ECSComponent
-{
-    public float X;
-    public float Y;
-    public float Z;
+using ESC.Patron;
 
-    public PositionComponent(float X, float Y, float Z) 
+namespace ESC.Implementation
+{
+    public class PositionComponent : EcsComponent
     {
-        this.X = X;
-        this.Y = Y;
-        this.Z = Z;
+        public float X;
+        public float Y;
+        public float Z;
+
+        public PositionComponent(float x, float y, float z) 
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
     }
 }

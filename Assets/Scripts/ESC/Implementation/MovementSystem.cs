@@ -1,37 +1,41 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ESC.Patron;
 
-public sealed class MovementSystem : ECSSystem
+namespace ESC.Implementation
 {
-    private ParallelOptions parallelOptions;
-
-    private IDictionary<uint, PositionComponent> positionComponents;
-    private IDictionary<uint, VelocityComponent> velocityComponents;
-    private IEnumerable<uint> queryedEntities;
-
-    public override void Initialize()
+    public sealed class MovementSystem : ECSSystem
     {
-        parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 32 };
-    }
+        private ParallelOptions _parallelOptions;
 
-    protected override void PreExecute(float deltaTime)
-    {
-        positionComponents??= ECSManager.GetComponents<PositionComponent>();
-        velocityComponents??= ECSManager.GetComponents<VelocityComponent>();
-        queryedEntities??= ECSManager.GetEntitiesWhitComponentTypes(typeof(PositionComponent), typeof(VelocityComponent));
-    }
+        private IDictionary<uint, PositionComponent> _positionComponents;
+        private IDictionary<uint, VelocityComponent> _velocityComponents;
+        private IEnumerable<uint> _queryedEntities;
 
-    protected override void Execute(float deltaTime)
-    {
-        Parallel.ForEach(queryedEntities, parallelOptions, i =>
+        public override void Initialize()
         {
-            positionComponents[i].X += velocityComponents[i].directionX * velocityComponents[i].velocity * deltaTime;
-            positionComponents[i].Y += velocityComponents[i].directionY * velocityComponents[i].velocity * deltaTime;
-            positionComponents[i].Z += velocityComponents[i].directionZ * velocityComponents[i].velocity * deltaTime;
-        });
-    }
+            _parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 32 };
+        }
 
-    protected override void PostExecute(float deltaTime)
-    {
+        protected override void PreExecute(float deltaTime)
+        {
+            _positionComponents??= EcsManager.GetComponents<PositionComponent>();
+            _velocityComponents??= EcsManager.GetComponents<VelocityComponent>();
+            _queryedEntities??= EcsManager.GetEntitiesWhitComponentTypes(typeof(PositionComponent), typeof(VelocityComponent));
+        }
+
+        protected override void Execute(float deltaTime)
+        {
+            Parallel.ForEach(_queryedEntities, _parallelOptions, i =>
+            {
+                _positionComponents[i].X += _velocityComponents[i].directionX * _velocityComponents[i].velocity * deltaTime;
+                _positionComponents[i].Y += _velocityComponents[i].directionY * _velocityComponents[i].velocity * deltaTime;
+                _positionComponents[i].Z += _velocityComponents[i].directionZ * _velocityComponents[i].velocity * deltaTime;
+            });
+        }
+
+        protected override void PostExecute(float deltaTime)
+        {
+        }
     }
 }

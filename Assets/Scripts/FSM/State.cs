@@ -3,175 +3,178 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct BehaviourActions
+namespace FSM
 {
-    private Dictionary<int,List<Action>> mainThreadBehaviours;
-    private ConcurrentDictionary<int,ConcurrentBag<Action>> multithreadBehaviours;
-    private Action transitionBehaviour;
-
-    public void AddMainThreadBehaviour(int executionOrder, Action behaviour)
+    public struct BehaviourActions
     {
-        if (mainThreadBehaviours == null)
-            mainThreadBehaviours = new Dictionary<int, List<Action>>();
+        private Dictionary<int,List<Action>> _mainThreadBehaviours;
+        private ConcurrentDictionary<int,ConcurrentBag<Action>> _multithreadBehaviours;
+        private Action _transitionBehaviour;
 
-        if (!mainThreadBehaviours.ContainsKey(executionOrder))
-            mainThreadBehaviours.Add(executionOrder, new List<Action>());
+        public void AddMainThreadBehaviour(int executionOrder, Action behaviour)
+        {
+            if (_mainThreadBehaviours == null)
+                _mainThreadBehaviours = new Dictionary<int, List<Action>>();
+
+            if (!_mainThreadBehaviours.ContainsKey(executionOrder))
+                _mainThreadBehaviours.Add(executionOrder, new List<Action>());
         
-        mainThreadBehaviours[executionOrder].Add(behaviour);
-    }
+            _mainThreadBehaviours[executionOrder].Add(behaviour);
+        }
 
-    public void AddMultiThreadBehaviour(int executionOrder, Action behaviour)
-    {
-        if (multithreadBehaviours == null)
-            multithreadBehaviours = new ConcurrentDictionary<int, ConcurrentBag<Action>>();
+        public void AddMultiThreadBehaviour(int executionOrder, Action behaviour)
+        {
+            if (_multithreadBehaviours == null)
+                _multithreadBehaviours = new ConcurrentDictionary<int, ConcurrentBag<Action>>();
 
-        if (!multithreadBehaviours.ContainsKey(executionOrder))
-            multithreadBehaviours.TryAdd(executionOrder, new ConcurrentBag<Action>());
+            if (!_multithreadBehaviours.ContainsKey(executionOrder))
+                _multithreadBehaviours.TryAdd(executionOrder, new ConcurrentBag<Action>());
         
-        multithreadBehaviours[executionOrder].Add(behaviour);
-    }
+            _multithreadBehaviours[executionOrder].Add(behaviour);
+        }
 
-    public void SetTransitionBehaviour(Action behaviour)
-    {
-        transitionBehaviour = behaviour;
-    }
+        public void SetTransitionBehaviour(Action behaviour)
+        {
+            _transitionBehaviour = behaviour;
+        }
     
-    public Dictionary<int,List<Action>> MainThreadBehaviours => mainThreadBehaviours;
-    public ConcurrentDictionary<int,ConcurrentBag<Action>> MultithreadBehaviours => multithreadBehaviours;
-    public Action TransitionBehaviour => transitionBehaviour;
-}
-
-public abstract class State
-{
-    public Action<Enum> OnFlag;
-    public abstract BehaviourActions GetOnEnterBehaviours(params object[] parameters);
-    public abstract BehaviourActions GetOnExitBehaviours(params object[] parameters);
-    public abstract BehaviourActions GetOnTickBehaviours(params object[] parameters);
-}
-
-public sealed class ChaseState : State
-{
-    public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
-    {
-        return default;
+        public Dictionary<int,List<Action>> MainThreadBehaviours => _mainThreadBehaviours;
+        public ConcurrentDictionary<int,ConcurrentBag<Action>> MultithreadBehaviours => _multithreadBehaviours;
+        public Action TransitionBehaviour => _transitionBehaviour;
     }
 
-    public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
+    public abstract class State
     {
-        return default;
+        public Action<Enum> OnFlag;
+        public abstract BehaviourActions GetOnEnterBehaviours(params object[] parameters);
+        public abstract BehaviourActions GetOnExitBehaviours(params object[] parameters);
+        public abstract BehaviourActions GetOnTickBehaviours(params object[] parameters);
     }
 
-    public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
+    public sealed class ChaseState : State
     {
-        Transform OwnerTransform = parameters[0] as Transform;
-        Transform TargetTransform = parameters[1] as Transform;
-        
-        float speed = Convert.ToSingle(parameters[2]);
-        float explodeDistance = Convert.ToSingle(parameters[3]);
-        float lostDistance = Convert.ToSingle(parameters[4]);
-
-        BehaviourActions behaviours = new BehaviourActions();
-        
-        //behaviours.Add(() => { });  Exprecion Lambda o Metodo Anonimo 
-        
-        behaviours.AddMainThreadBehaviour(0, () =>
+        public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
-            OwnerTransform.position += (TargetTransform.position - OwnerTransform.position).normalized * speed * Time.deltaTime;
-        });
+            return default;
+        }
 
-        behaviours.AddMultiThreadBehaviour(1, () =>
+        public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
         {
-            Debug.Log("Whistle");
-        });
-        
-        behaviours.SetTransitionBehaviour(() =>
+            return default;
+        }
+
+        public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            if (Vector3.Distance(TargetTransform.position,OwnerTransform.position) < explodeDistance)
-                OnFlag?.Invoke(Flags.OnTargetReach);
-            
-            else if (Vector3.Distance(TargetTransform.position,OwnerTransform.position) > lostDistance)
-                OnFlag?.Invoke(Flags.OnTargetLost);
-        });
+            Transform ownerTransform = parameters[0] as Transform;
+            Transform targetTransform = parameters[1] as Transform;
         
-        return behaviours;
-    }
-}
+            float speed = Convert.ToSingle(parameters[2]);
+            float explodeDistance = Convert.ToSingle(parameters[3]);
+            float lostDistance = Convert.ToSingle(parameters[4]);
 
-public sealed class PatrolState : State
-{
-    private Transform actualTarget;
-    public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
-    {
-        return default;
-    }
-
-    public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
-    {
-        return default;
-    }
-
-    public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
-    {
-        Transform ownerTransform = parameters[0] as Transform;
-        Transform waypoint1 = parameters[1] as Transform;
-        Transform waypoint2 = parameters[2] as Transform;
-        Transform chaseTarget = parameters[3] as Transform;
+            BehaviourActions behaviours = new BehaviourActions();
         
-        float speed = Convert.ToSingle(parameters[4]);
-        float chaseDistance = Convert.ToSingle(parameters[5]);
+            //behaviours.Add(() => { });  Exprecion Lambda o Metodo Anonimo 
         
-        BehaviourActions behaviours = new BehaviourActions();
-        
-        
-        behaviours.AddMainThreadBehaviour(0, () =>
-        {
-            if (actualTarget == null)
-                actualTarget = waypoint1;
-
-            if (Vector3.Distance(ownerTransform.position, actualTarget.position) < 0.2f)
+            behaviours.AddMainThreadBehaviour(0, () =>
             {
-                if (actualTarget == waypoint1)
-                    actualTarget = waypoint2;
+                ownerTransform.position += (targetTransform.position - ownerTransform.position).normalized * speed * Time.deltaTime;
+            });
 
-                else
-                    actualTarget = waypoint1;
-            }
+            behaviours.AddMultiThreadBehaviour(1, () =>
+            {
+                Debug.Log("Whistle");
+            });
+        
+            behaviours.SetTransitionBehaviour(() =>
+            {
+                if (Vector3.Distance(targetTransform.position,ownerTransform.position) < explodeDistance)
+                    OnFlag?.Invoke(Flags.OnTargetReach);
             
-            ownerTransform.position += (actualTarget.position - ownerTransform.position).normalized * speed * Time.deltaTime;
-        });
+                else if (Vector3.Distance(targetTransform.position,ownerTransform.position) > lostDistance)
+                    OnFlag?.Invoke(Flags.OnTargetLost);
+            });
         
-        behaviours.SetTransitionBehaviour(() =>
+            return behaviours;
+        }
+    }
+
+    public sealed class PatrolState : State
+    {
+        private Transform actualTarget;
+        public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
-            if (Vector3.Distance(ownerTransform.position,chaseTarget.position) < chaseDistance)
-                OnFlag?.Invoke(Flags.OntargetNear);
-        });
-        
-        return behaviours;
-    }
-}
+            return default;
+        }
 
-public sealed class ExplodeState : State
-{
-    public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
-    {
-        BehaviourActions behaviours = new BehaviourActions();
+        public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
+        {
+            return default;
+        }
+
+        public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
+        {
+            Transform ownerTransform = parameters[0] as Transform;
+            Transform waypoint1 = parameters[1] as Transform;
+            Transform waypoint2 = parameters[2] as Transform;
+            Transform chaseTarget = parameters[3] as Transform;
         
-        behaviours.AddMultiThreadBehaviour(0,() => {Debug.Log("Boom"); });
+            float speed = Convert.ToSingle(parameters[4]);
+            float chaseDistance = Convert.ToSingle(parameters[5]);
         
-        return behaviours;
+            BehaviourActions behaviours = new BehaviourActions();
+        
+        
+            behaviours.AddMainThreadBehaviour(0, () =>
+            {
+                if (actualTarget == null)
+                    actualTarget = waypoint1;
+
+                if (Vector3.Distance(ownerTransform.position, actualTarget.position) < 0.2f)
+                {
+                    if (actualTarget == waypoint1)
+                        actualTarget = waypoint2;
+
+                    else
+                        actualTarget = waypoint1;
+                }
+            
+                ownerTransform.position += (actualTarget.position - ownerTransform.position).normalized * speed * Time.deltaTime;
+            });
+        
+            behaviours.SetTransitionBehaviour(() =>
+            {
+                if (Vector3.Distance(ownerTransform.position,chaseTarget.position) < chaseDistance)
+                    OnFlag?.Invoke(Flags.OntargetNear);
+            });
+        
+            return behaviours;
+        }
     }
 
-    public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
+    public sealed class ExplodeState : State
     {
-        return default;
-    }
+        public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
+        {
+            BehaviourActions behaviours = new BehaviourActions();
+        
+            behaviours.AddMultiThreadBehaviour(0,() => {Debug.Log("Boom"); });
+        
+            return behaviours;
+        }
 
-    public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
-    {
-        BehaviourActions behaviours = new BehaviourActions();
+        public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
+        {
+            return default;
+        }
+
+        public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
+        {
+            BehaviourActions behaviours = new BehaviourActions();
         
-        behaviours.AddMultiThreadBehaviour(0,() => {Debug.Log("F"); });
+            behaviours.AddMultiThreadBehaviour(0,() => {Debug.Log("F"); });
         
-        return behaviours;
+            return behaviours;
+        }
     }
 }

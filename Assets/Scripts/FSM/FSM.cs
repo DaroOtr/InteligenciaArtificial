@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FSM;
 
 public class FSM<EnumState,EnumFlag> 
     where EnumState : Enum 

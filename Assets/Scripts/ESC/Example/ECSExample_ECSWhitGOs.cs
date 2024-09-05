@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using ESC.Implementation;
+using ESC.Patron;
 using UnityEngine;
 
 public class ECSExample_ECSWhitGOs : MonoBehaviour
@@ -11,14 +13,14 @@ public class ECSExample_ECSWhitGOs : MonoBehaviour
 
     void Start()
     {
-        ECSManager.Init();
+        EcsManager.Init();
         entities = new Dictionary<uint, GameObject>();
         for (int i = 0; i < entityCount; i++)
         {
-            uint entityID = ECSManager.CreateEntity();
-            ECSManager.AddComponent<PositionComponent>(entityID,
+            uint entityID = EcsManager.CreateEntity();
+            EcsManager.AddComponent<PositionComponent>(entityID,
                 new PositionComponent(0, -i, 0));
-            ECSManager.AddComponent<VelocityComponent>(entityID,
+            EcsManager.AddComponent<VelocityComponent>(entityID,
                 new VelocityComponent(velocity, Vector3.right.x, Vector3.right.y, Vector3.right.z));
             entities.Add(entityID, Instantiate(prefab, new Vector3(0, -i, 0), Quaternion.identity));
         }
@@ -26,14 +28,14 @@ public class ECSExample_ECSWhitGOs : MonoBehaviour
 
     void Update()
     {
-        ECSManager.Tick(Time.deltaTime);
+        EcsManager.Tick(Time.deltaTime);
     }
 
     void LateUpdate()
     {
         foreach (KeyValuePair<uint, GameObject> entity in entities)
         {
-            PositionComponent position = ECSManager.GetComponent<PositionComponent>(entity.Key);
+            PositionComponent position = EcsManager.GetComponent<PositionComponent>(entity.Key);
             entity.Value.transform.SetPositionAndRotation(new Vector3(position.X, position.Y, position.Z), Quaternion.identity);
         }
     }

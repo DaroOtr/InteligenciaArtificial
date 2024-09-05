@@ -1,47 +1,50 @@
 using System;
 using System.Collections.Generic;
 
-public class ECSEntity
+namespace ESC.Patron
 {
-    private class EntityID
+    public class EcsEntity
     {
-        private static uint LastEntityID = 0;
-        internal static uint GetNew() => LastEntityID++;
-    }
+        private class EntityID
+        {
+            private static uint _lastEntityID = 0;
+            internal static uint GetNew() => _lastEntityID++;
+        }
 
-    private uint ID;
-    private List<Type> componentsType;
+        private uint ID;
+        private List<Type> componentsType;
 
-    public ECSEntity()
-    {
-        ID = EntityID.GetNew();
-        componentsType = new List<Type>();
-    }
+        public EcsEntity()
+        {
+            ID = EntityID.GetNew();
+            componentsType = new List<Type>();
+        }
 
-    public uint GetID() => ID;
+        public uint GetID() => ID;
 
-    public void Dispose()
-    {
-        componentsType.Clear();
-    }
+        public void Dispose()
+        {
+            componentsType.Clear();
+        }
 
-    public void AddComponentType<ComponentType>() where ComponentType : ECSComponent
-    {
-        AddComponentType(typeof(ComponentType));
-    }
+        public void AddComponentType<ComponentType>() where ComponentType : EcsComponent
+        {
+            AddComponentType(typeof(ComponentType));
+        }
 
-    public void AddComponentType(Type ComponentType)
-    {
-        componentsType.Add(ComponentType);
-    }
+        public void AddComponentType(Type ComponentType)
+        {
+            componentsType.Add(ComponentType);
+        }
 
-    public bool ContainsComponentType<ComponentType>() where ComponentType : ECSComponent
-    {
-        return ContainsComponentType(typeof(ComponentType));
-    }
+        public bool ContainsComponentType<ComponentType>() where ComponentType : EcsComponent
+        {
+            return ContainsComponentType(typeof(ComponentType));
+        }
 
-    public bool ContainsComponentType(Type ComponentType)
-    {
-        return componentsType.Contains(ComponentType);
+        public bool ContainsComponentType(Type ComponentType)
+        {
+            return componentsType.Contains(ComponentType);
+        }
     }
 }
