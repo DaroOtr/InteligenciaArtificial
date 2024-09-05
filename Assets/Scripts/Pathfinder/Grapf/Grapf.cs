@@ -6,7 +6,7 @@ using Pathfinder.Node;
 namespace Pathfinder.Grapf
 {
     public class Grapf<TNodeType> : IGrapf<TNodeType>
-        where TNodeType : INode, new()
+        where TNodeType : INode, new() 
     {
         public List<TNodeType> Nodes = new List<TNodeType>();
         private Func<List<TNodeType>> _grapfCrationBehaviour;
@@ -54,7 +54,7 @@ namespace Pathfinder.Grapf
 
             return new TNodeType();
         }
-
+        
         public List<TNodeType> GetNodes()
         {
             return Nodes;

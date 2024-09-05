@@ -2303,7 +2303,10 @@ MonoBehaviour:
   grapfWidth: {fileID: 261999785}
   grapfHeight: {fileID: 215623600}
   nodeSeparation: {fileID: 579706314}
-  _grapfView: {fileID: 1986333768}
+  mineCount: {fileID: 84205947}
+  minerCount: {fileID: 1614856615}
+  caravanCount: {fileID: 4659058}
+  grapfView: {fileID: 1986333768}
 --- !u!1 &745092988
 GameObject:
   m_ObjectHideFlags: 0
@@ -4454,7 +4457,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2024926611
 RectTransform:
   m_ObjectHideFlags: 0

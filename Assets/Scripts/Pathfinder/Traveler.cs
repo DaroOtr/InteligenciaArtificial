@@ -30,7 +30,6 @@ namespace Pathfinder
 
         public void InitTraveler()
         {
-            grapfView.InitGrapf();
             _algorithmType = grapfView._algorithmType;
             Debug.Log(_algorithmType.ToString());
             switch (_algorithmType)

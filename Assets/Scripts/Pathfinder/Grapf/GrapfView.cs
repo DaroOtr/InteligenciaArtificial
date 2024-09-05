@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Pathfinder.Algorithm;
 using Pathfinder.Node;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Pathfinder.Grapf
 {
@@ -14,14 +16,16 @@ namespace Pathfinder.Grapf
         private int _grapfWidth;
         private int _grapfHeight;
         public int _nodeSeparation { get; private set; }
+        public int _mineCount { get; private set; }
 
         private bool _isGrapfInitialized = false;
 
-        public void SetGrapfCreationParams(int grapfWidth,int grapfHeight,int nodeSeparation)
+        public void SetGrapfCreationParams(int grapfWidth,int grapfHeight,int nodeSeparation,int mineCount)
         {
             _grapfWidth = grapfWidth;
             _grapfHeight = grapfHeight;
             _nodeSeparation = nodeSeparation;
+            _mineCount = mineCount;
             nodes = new List<Node<Vector2Int>>();
             _algorithmType = AlgorithmType.AStar_Pf;
         }
@@ -83,7 +87,37 @@ namespace Pathfinder.Grapf
             {
                 nodes.Add(node);
             }
+
+            SetInitialNodes();
             _isGrapfInitialized = true;
+        }
+
+        public void SetInitialNodes()
+        {
+            List<Node<Vector2Int>> minesPLaced = new List<Node<Vector2Int>>();
+            
+            for (int i = 0; i < _mineCount; i++)
+            {
+                int random = Random.Range(0, nodes.Count);
+                while (!minesPLaced.Contains(Grapf.Nodes[random]))
+                {
+                    random = Random.Range(0, nodes.Count);
+                    if (Grapf.Nodes[random].GetNodeType() != RtsNodeType.Mine &&
+                        Grapf.Nodes[random].GetNodeType() != RtsNodeType.UrbanCenter)
+                    {
+                        Grapf.Nodes[random].SetNodeType(RtsNodeType.Mine);
+                        minesPLaced.Add(Grapf.Nodes[random]);
+                    }
+                }
+            }
+
+            int halfWidth = _grapfWidth / 2;
+            int halfHeight = _grapfHeight / 2;
+            foreach (Node<Vector2Int> node in Grapf.Nodes)
+            {
+                if (node.GetCoordinate().x == halfWidth && node.GetCoordinate().y == halfHeight)
+                    node.SetNodeType(RtsNodeType.UrbanCenter);
+            }
         }
 
         private void OnDrawGizmos()
