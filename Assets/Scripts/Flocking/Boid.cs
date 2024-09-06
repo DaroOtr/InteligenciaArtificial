@@ -9,15 +9,12 @@ namespace Flocking
         public float speed = 2.5f;
         public float turnSpeed = 5f;
         public float detectionRadious = 3.0f;
-        public float AlignmentRadious = 1f;
-        public float CohesionRadious = 1f;
-        public float separationRadious = 2f;
-        public float DirectionRadious = 2f;
 
         private Func<Boid, Vector3> Alignment;
         private Func<Boid, Vector3> Cohesion;
         private Func<Boid, Vector3> Separation;
         private Func<Boid, Vector3> Direction;
+        private List<float> multipliers;
 
         public void Init(Func<Boid, Vector3> Alignment, 
             Func<Boid, Vector3> Cohesion, 
@@ -29,10 +26,7 @@ namespace Flocking
             this.Cohesion = Cohesion;
             this.Separation = Separation;
             this.Direction = Direction;
-            AlignmentRadious = multipliers[0];
-            CohesionRadious = multipliers[1];
-            separationRadious = multipliers[2];
-            DirectionRadious = multipliers[3];
+            this.multipliers = multipliers;
         }
 
         private void Update()
@@ -43,7 +37,7 @@ namespace Flocking
 
         public Vector3 ACS()
         {
-            Vector3 ACS = (Alignment(this) * AlignmentRadious) + (Cohesion(this) * CohesionRadious) + (Separation(this) * separationRadious) + (Direction(this) * DirectionRadious);
+            Vector3 ACS = (Alignment(this) * multipliers[0]) + (Cohesion(this) * multipliers[1]) + (Separation(this) * multipliers[2]) + (Direction(this) * multipliers[3]);
             return ACS.normalized;
         }
     }
