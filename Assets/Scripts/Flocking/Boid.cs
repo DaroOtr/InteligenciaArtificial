@@ -37,8 +37,7 @@ namespace Flocking
 
         private void Update()
         {
-            Vector3 acs = ACS();
-            transform.forward = Vector3.Lerp(transform.forward, acs, turnSpeed * Time.deltaTime);
+            transform.forward = Vector3.Lerp(transform.forward, ACS(), turnSpeed * Time.deltaTime);
             transform.position +=  transform.forward * speed * Time.deltaTime;
         }
 

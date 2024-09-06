@@ -44,7 +44,8 @@ namespace Flocking
             foreach (Boid b in insideRadiusBoids)
             {
                 if (b == boid) 
-                    continue;  
+                    continue;     
+                
                 avg += b.transform.forward;
             }
 
