@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ESC.Implementation;
+using ESC.Implementation.Components;
 using ESC.Patron;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -63,10 +64,10 @@ namespace ESC.Example
                 PositionComponent position = EcsManager.GetComponent<PositionComponent>(_entities[i]);
                 Vector3 newPos = new Vector3(position.X, position.Y, position.Z);
                 RotationComponent rotation = EcsManager.GetComponent<RotationComponent>(_entities[i]);
-                Quaternion newRot = Quaternion.Euler(rotation.rotationX, rotation.rotationY, rotation.rotationZ);
+                Quaternion newRot = Quaternion.Euler(rotation.RotationX, rotation.RotationY, rotation.RotationZ);
             
                 drawMatrix[(i / MAX_OBJS_PER_DRAWCALL)][(i % MAX_OBJS_PER_DRAWCALL)]
-                    .SetTRS(newPos, Quaternion.Euler(rotation.rotationX,rotation.rotationY,rotation.rotationZ), _prefabScale);
+                    .SetTRS(newPos, Quaternion.Euler(rotation.RotationX,rotation.RotationY,rotation.RotationZ), _prefabScale);
             });
             for (int i = 0; i < drawMatrix.Count; i++)
             {

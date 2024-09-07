@@ -5,7 +5,6 @@ using Pathfinder.Algorithm;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Pathfinder
@@ -64,10 +63,13 @@ namespace Pathfinder
 
         public IEnumerator Move(List<Node<Vector2Int>> path)
         {
+            //Vector3 lastPos = transform.position;
             foreach (Node<Vector2Int> node in path)
             {
-                transform.position = new Vector3(node.GetCoordinate().x * grapfView._nodeSeparation,
+                Vector3 newPos = new Vector3(node.GetCoordinate().x * grapfView._nodeSeparation,
                     node.GetCoordinate().y * grapfView._nodeSeparation);
+                
+                transform.position = newPos;
                 yield return new WaitForSeconds(1.0f);
             }
         }

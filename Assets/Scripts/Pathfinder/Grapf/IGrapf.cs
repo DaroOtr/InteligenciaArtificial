@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Pathfinder.Node;
 
 namespace Pathfinder.Grapf
 {
@@ -9,8 +10,15 @@ namespace Pathfinder.Grapf
         public void InitGrapf();
         public void AddNodeNeighbors();
         public TNodeType GetNode(int nodeId);
+        public TNodeType GetNode(RtsNodeType nodeType);
         public List<TNodeType> GetNodes();
         public void SetNodeCost(int nodeId,int nodeCost);
         public void SetNodeTransitionCost(int fromNodeId, int toNodeId,int transitionCost);
+    }
+
+    public interface IGrapf<TNodeType,TCoordinateType> : IGrapf<TNodeType>
+    where TCoordinateType : IEquatable<TCoordinateType>
+    {
+        public TNodeType GetNode(TCoordinateType nodeType);
     }
 }

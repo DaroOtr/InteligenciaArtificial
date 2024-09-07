@@ -1,6 +1,6 @@
 using ESC.Patron;
 
-namespace ESC.Implementation
+namespace ESC.Implementation.Components
 {
     public class PositionComponent : EcsComponent
     {

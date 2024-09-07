@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ESC.Implementation;
+using ESC.Implementation.Components;
 using ESC.Patron;
 using UnityEngine;
 

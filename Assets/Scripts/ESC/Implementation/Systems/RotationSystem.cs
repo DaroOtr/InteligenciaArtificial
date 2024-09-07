@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ESC.Implementation.Components;
 using ESC.Patron;
 
-namespace ESC.Implementation
+namespace ESC.Implementation.Systems
 {
     public class RotationSystem : ECSSystem
     {
@@ -28,9 +29,9 @@ namespace ESC.Implementation
         {
             Parallel.ForEach(_queryedEntities, _parallelOptions, i =>
             {
-                _rotationComponents[i].rotationX +=  _rotationComponents[i].rotX * _rotationComponents[i].rotationVelocity * deltaTime;
-                _rotationComponents[i].rotationY +=  _rotationComponents[i].rotY * _rotationComponents[i].rotationVelocity * deltaTime;
-                _rotationComponents[i].rotationZ +=  _rotationComponents[i].rotZ * _rotationComponents[i].rotationVelocity * deltaTime;
+                _rotationComponents[i].RotationX +=  _rotationComponents[i].RotX * _rotationComponents[i].RotationVelocity * deltaTime;
+                _rotationComponents[i].RotationY +=  _rotationComponents[i].RotY * _rotationComponents[i].RotationVelocity * deltaTime;
+                _rotationComponents[i].RotationZ +=  _rotationComponents[i].RotZ * _rotationComponents[i].RotationVelocity * deltaTime;
             });
         }
 

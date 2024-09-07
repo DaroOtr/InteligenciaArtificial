@@ -16,7 +16,7 @@ namespace _1Parcial_RTS
         [SerializeField] private InputField minerCount;
         [SerializeField] private InputField caravanCount;
         [SerializeField] private GrapfView grapfView;
-        
+
         public void InitGame()
         {
             int _width = 0;
@@ -26,38 +26,39 @@ namespace _1Parcial_RTS
             int _minerCount = 0;
             int _caravanCount = 0;
 
-            if (int.Parse(grapfWidth.text) <= 0 || grapfWidth.text == null)
-                _width = 1;
+
+            if (grapfWidth.text == "" || int.Parse(grapfWidth.text) <= 0)
+                _width = 11;
             else
                 _width = int.Parse(grapfWidth.text);
-            
-            if (int.Parse(grapfHeight.text) <= 0 || grapfHeight.text == null)
-                _height = 1;
+
+            if (grapfHeight.text == "" || int.Parse(grapfHeight.text) <= 0)
+                _height = 11;
             else
                 _height = int.Parse(grapfHeight.text);
-            
-            if (int.Parse(nodeSeparation.text) <= 0 || nodeSeparation.text == null)
+
+            if (nodeSeparation.text == "" || int.Parse(nodeSeparation.text) <= 0)
                 _separation = 1;
             else
                 _separation = int.Parse(nodeSeparation.text);
-            
-            if (int.Parse(mineCount.text) <= 0 || mineCount.text == null)
-                _mineCount = 1;
+
+            if (mineCount.text == "" || int.Parse(mineCount.text) <= 0)
+                _mineCount = 5;
             else
                 _mineCount = int.Parse(mineCount.text);
-            
-            if (int.Parse(minerCount.text) <= 0 || minerCount.text == null)
+
+            if (minerCount.text == "" || int.Parse(minerCount.text) <= 0)
                 _minerCount = 1;
             else
                 _minerCount = int.Parse(minerCount.text);
-            
-            if (int.Parse(caravanCount.text) <= 0 || caravanCount.text == null)
+
+            if (caravanCount.text == "" || int.Parse(caravanCount.text) <= 0)
                 _caravanCount = 1;
             else
                 _caravanCount = int.Parse(caravanCount.text);
-            
-            
-            grapfView.SetGrapfCreationParams(_width,_height,_separation,_mineCount);
+
+
+            grapfView.SetGrapfCreationParams(_width, _height, _separation, _mineCount);
             grapfView.InitGrapf();
         }
     }

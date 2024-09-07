@@ -55,6 +55,17 @@ namespace Pathfinder.Grapf
             return new TNodeType();
         }
         
+        public TNodeType GetNode(RtsNodeType nodeType)
+        {
+            foreach (TNodeType node in Nodes)
+            {
+                if (node.GetNodeType() == nodeType)
+                    return node;
+            }
+
+            return new TNodeType();
+        }
+        
         public List<TNodeType> GetNodes()
         {
             return Nodes;

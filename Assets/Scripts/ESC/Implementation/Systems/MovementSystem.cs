@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ESC.Implementation.Components;
 using ESC.Patron;
 
-namespace ESC.Implementation
+namespace ESC.Implementation.Systems
 {
     public sealed class MovementSystem : ECSSystem
     {
@@ -28,9 +29,9 @@ namespace ESC.Implementation
         {
             Parallel.ForEach(_queryedEntities, _parallelOptions, i =>
             {
-                _positionComponents[i].X += _velocityComponents[i].directionX * _velocityComponents[i].velocity * deltaTime;
-                _positionComponents[i].Y += _velocityComponents[i].directionY * _velocityComponents[i].velocity * deltaTime;
-                _positionComponents[i].Z += _velocityComponents[i].directionZ * _velocityComponents[i].velocity * deltaTime;
+                _positionComponents[i].X += _velocityComponents[i].DirectionX * _velocityComponents[i].Velocity * deltaTime;
+                _positionComponents[i].Y += _velocityComponents[i].DirectionY * _velocityComponents[i].Velocity * deltaTime;
+                _positionComponents[i].Z += _velocityComponents[i].DirectionZ * _velocityComponents[i].Velocity * deltaTime;
             });
         }
 
