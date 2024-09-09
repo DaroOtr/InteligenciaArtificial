@@ -49,6 +49,7 @@ public class FSM<EnumState,EnumFlag>
     {
         int _state = Convert.ToInt16(state);
         currentState = _state;
+        ExecuteBehaviour(GetCurrentOnEnterBehaviour);
     }
 
     public void SetTransition(EnumState originState,EnumFlag flag,EnumState destinationState,Action onTransition = null)

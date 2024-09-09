@@ -1,8 +1,5 @@
 using Pathfinder.Grapf;
-using TMPro;
-using UnityEditor.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace _1Parcial_RTS
