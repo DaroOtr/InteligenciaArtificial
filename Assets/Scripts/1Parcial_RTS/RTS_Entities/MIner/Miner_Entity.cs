@@ -69,7 +69,32 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                     {
                     };
                 });
-            _minerFsm.SetTransition(MinerBehaviours.Walk, MinerFlags.OnWait, MinerBehaviours.Wait,
+            _minerFsm.AddBehaviour<MineState>(MinerBehaviours.Mine,
+                onTickParameters: () =>
+                {
+                    return new object[]
+                    {
+                        
+                    };
+                },
+                onEnterParameters: () =>
+                {
+                    return new object[]
+                    {
+                        
+                    };
+                },
+                onExitParameters: () =>
+                {
+                    return new object[]
+                    {
+                    };
+                });
+            
+            
+            _minerFsm.SetTransition(MinerBehaviours.Walk, MinerFlags.OnMineReach, MinerBehaviours.Mine,
+                () => { Debug.Log("Minardium"); });
+            _minerFsm.SetTransition(MinerBehaviours.Mine, MinerFlags.OnWait, MinerBehaviours.Wait,
                 () => { Debug.Log("Espero"); });
             _minerFsm.ForceState(MinerBehaviours.Walk);
             isminerInitialized = true;

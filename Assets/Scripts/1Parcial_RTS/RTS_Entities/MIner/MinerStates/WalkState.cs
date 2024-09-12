@@ -56,55 +56,45 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
             Transform ownerTransform = parameters[0] as Transform;
+            Vector3 aux = Vector3.zero;
+            Vector3 minerpos = Vector3.zero;
+
 
             BehaviourActions behaviours = new BehaviourActions();
 
+            behaviours.AddMainThreadBehaviour(0, () =>
+            {
+                minerpos = ownerTransform.position;
 
-            //behaviours.Add(() => { });  Exprecion Lambda o Metodo Anonimo 
+                if (_path.Count > 0)
+                {
+                    aux = new Vector3(_nodeSeparation * _path[0].GetCoordinate().x,
+                        _nodeSeparation * _path[0].GetCoordinate().y);
+                }
+            });
 
-            behaviours.AddMainThreadBehaviour(0,
+            behaviours.AddMultiThreadBehaviour(1, () =>
+            {
+                if (_path.Count > 0)
+                {
+                    if (Vector3.Distance(minerpos, aux) < _mineDistance)
+                        _path.Remove(_path[0]);
+                }
+            });
+
+            behaviours.AddMainThreadBehaviour(2,
                 () =>
                 {
-                    //ownerTransform.position = new Vector3(_pos.x,_pos.y);
-                    if (_path != null && _path.Count > 0)
-                    {
-                        Debug.Log("Tick");
-                        Vector3 aux = new Vector3(_nodeSeparation * _path[0].GetCoordinate().x,
-                            _nodeSeparation * _path[0].GetCoordinate().y);
-
-                        ownerTransform.position += (aux - ownerTransform.position).normalized * _speed * Time.deltaTime;
-
-                        if (Vector3.Distance(ownerTransform.position, aux) < _mineDistance)
-                            _path.Remove(_path[0]);
-                    }
+                    ownerTransform.position += (aux - ownerTransform.position).normalized * _speed * Time.deltaTime;
                 });
+
 
             behaviours.SetTransitionBehaviour(() =>
             {
                 Vector3 target = new Vector3(_destinationNode.GetCoordinate().x, _destinationNode.GetCoordinate().y);
 
-                if (Vector3.Distance(ownerTransform.position, target) < _mineDistance)
-                    Debug.Log("_finalDestination " + _destinationNode.GetCoordinate());
-
-                //float testX = target.x - ownerTransform.position.x;
-                //float testY = target.y - ownerTransform.position.y;
-                //float testZ = target.z - ownerTransform.position.z;
-                //
-                //float sum = (testX + testY) / 2;
-                //float epsilon = (Mathf.Epsilon) * 10;
-                //
-                //if (sum < 0)
-                //    sum *= -1;
-                //
-                //if (sum < epsilon)
-                //{
-                //    Debug.Log("_finalDestination " + _destinationNode.GetCoordinate());
-                //    //OnFlag?.Invoke(Flags.OnReadyToMine);
-                //}
-
-                //if (Vector2.Distance(_pos, _destinationNode.GetCoordinate()) < _mineDistance)
-                //   
-                //    //OnFlag?.Invoke(MinerFlags.OnWait);
+                if (_path.Count == 0)
+                    OnFlag.Invoke(MinerFlags.OnMineReach);
             });
 
             return behaviours;
