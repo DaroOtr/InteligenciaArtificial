@@ -3563,8 +3563,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grapfView: {fileID: 1986333768}
-  minerSpeed: 10
-  mineDistanceDetection: 1.5
+  minerSpeed: 2
+  mineDistanceDetection: 0.01
   isminerInitialized: 0
 --- !u!1 &1572211701
 GameObject:
