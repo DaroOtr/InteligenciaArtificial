@@ -47,7 +47,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         public void InitMiner()
         {
             _currentNode = grapfView.Grapf.GetNode(RtsNodeType.UrbanCenter);
-            SetDestination();
+            SetDestination(RtsNodeType.Mine);
             Action<Node<Vector2Int>> OnsetNode = SetCurrentNode;
             _minerFsm.Init();
             _minerFsm.AddBehaviour<WalkState>(MinerBehaviours.Walk,
@@ -114,9 +114,9 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             _currentNode = newNode;
         }
 
-        private void SetDestination()
+        private void SetDestination(RtsNodeType nodeType)
         {
-            _destinationNode = grapfView.Grapf.GetNode(RtsNodeType.Mine);
+            _destinationNode = grapfView.Grapf.GetNode(nodeType);
         }
 
         private void Update()
