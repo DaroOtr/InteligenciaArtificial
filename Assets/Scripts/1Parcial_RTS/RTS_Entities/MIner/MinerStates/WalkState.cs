@@ -10,19 +10,19 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
 {
     public sealed class WalkState : State
     {
-        private Vector2 _pos = new Vector2();
         private float _speed = 0.0f;
         private float _mineDistance = 0.0f;
         private float _nodeSeparation = 0.0f;
         private Node<Vector2Int> _startNode;
         private Node<Vector2Int> _destinationNode;
-        private Node<Vector2Int> _currentNode;
 
         private AStarPathfinder<Node<Vector2Int>, Vector2Int> _pathfinder =
             new AStarPathfinder<Node<Vector2Int>, Vector2Int>();
 
         List<Node<Vector2Int>> _path = new List<Node<Vector2Int>>();
         private Grapf<Node<Vector2Int>> _grapf = new Grapf<Node<Vector2Int>>();
+
+        private Action<Node<Vector2Int>> _onSetCurrentnode;
 
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
@@ -36,12 +36,13 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
                 _mineDistance = Convert.ToSingle(parameters[2]);
                 _nodeSeparation = Convert.ToSingle(parameters[3]);
                 _grapf = parameters[4] as Grapf<Node<Vector2Int>>;
+                _startNode = parameters[5] as Node<Vector2Int>;
+                _destinationNode = parameters[6] as Node<Vector2Int>;
+                _onSetCurrentnode = parameters[7] as Action<Node<Vector2Int>>;
             });
             behaviours.AddMainThreadBehaviour(1, () =>
             {
-                _startNode = _grapf.GetNode(RtsNodeType.UrbanCenter);
                 ownerTransform.position = new Vector3(_startNode.GetCoordinate().x, _startNode.GetCoordinate().y);
-                SetDestination();
                 CalculatePath();
             });
 
@@ -77,6 +78,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             {
                 if (_path.Count > 0)
                 {
+                    _onSetCurrentnode.Invoke(_path[0]);
                     if (Vector3.Distance(minerpos, aux) < _mineDistance)
                         _path.Remove(_path[0]);
                 }
@@ -98,11 +100,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             });
 
             return behaviours;
-        }
-
-        private void SetDestination()
-        {
-            _destinationNode = _grapf.GetNode(RtsNodeType.Mine);
         }
 
         private void CalculatePath()

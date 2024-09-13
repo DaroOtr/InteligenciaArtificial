@@ -7,7 +7,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
     {
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
-            Debug.Log("Mine State :: Enter");
             return default;
         }
 
@@ -18,7 +17,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            Debug.Log("Mine State :: Tick");
             return default;
         }
     }
