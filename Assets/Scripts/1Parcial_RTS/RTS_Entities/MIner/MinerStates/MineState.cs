@@ -39,10 +39,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
                     Debug.Log("Current Gold : " + _getCurrentGold.Invoke());
                     _currentTime = 0;
                 }
-                
-                // Add Timer
-                // Mine
-                //On end mining Go to Urban Center
             });
             behaviours.AddMainThreadBehaviour(0, () =>
             {

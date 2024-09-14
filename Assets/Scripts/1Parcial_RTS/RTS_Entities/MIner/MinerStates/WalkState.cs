@@ -42,7 +42,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             });
             behaviours.AddMainThreadBehaviour(1, () =>
             {
-                ownerTransform.position = new Vector3(_startNode.GetCoordinate().x, _startNode.GetCoordinate().y);
+                ownerTransform.position = new Vector3(_startNode.GetCoordinate().x * _nodeSeparation, _startNode.GetCoordinate().y * _nodeSeparation);
                 CalculatePath();
             });
 
@@ -57,7 +57,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
             Transform ownerTransform = parameters[0] as Transform;
-            Vector3 aux = Vector3.zero;
+            Vector3 nextNode = Vector3.zero;
             Vector3 minerpos = Vector3.zero;
 
 
@@ -66,20 +66,17 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             behaviours.AddMainThreadBehaviour(0, () =>
             {
                 minerpos = ownerTransform.position;
-
-                if (_path.Count > 0)
-                {
-                    aux = new Vector3(_nodeSeparation * _path[0].GetCoordinate().x,
-                        _nodeSeparation * _path[0].GetCoordinate().y);
-                }
             });
 
             behaviours.AddMultiThreadBehaviour(1, () =>
             {
                 if (_path.Count > 0)
                 {
+                    nextNode = new Vector3(_nodeSeparation * _path[0].GetCoordinate().x,
+                        _nodeSeparation * _path[0].GetCoordinate().y);
+                    
                     _onSetCurrentnode.Invoke(_path[0]);
-                    if (Vector3.Distance(minerpos, aux) < _mineDistance)
+                    if (Vector3.Distance(minerpos, nextNode) < _mineDistance)
                         _path.Remove(_path[0]);
                 }
             });
@@ -87,14 +84,12 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             behaviours.AddMainThreadBehaviour(2,
                 () =>
                 {
-                    ownerTransform.position += (aux - ownerTransform.position).normalized * _speed * Time.deltaTime;
+                    ownerTransform.position += (nextNode - ownerTransform.position).normalized * _speed * Time.deltaTime;
                 });
 
 
             behaviours.SetTransitionBehaviour(() =>
             {
-                Vector3 target = new Vector3(_destinationNode.GetCoordinate().x, _destinationNode.GetCoordinate().y);
-
                 if (_path.Count == 0)
                     OnFlag.Invoke(MinerFlags.OnMineReach);
             });
