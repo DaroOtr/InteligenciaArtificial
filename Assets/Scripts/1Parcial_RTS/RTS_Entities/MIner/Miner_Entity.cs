@@ -27,6 +27,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         OnMineReach,
         OnMove,
         OnMine,
+        OnMaxLoad,
         OnEat,
         OnWait,
         OnRetreat
@@ -38,9 +39,12 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         private FSM<MinerBehaviours, MinerFlags> _minerFsm = new FSM<MinerBehaviours, MinerFlags>();
         private uint _minerID;
         private int _currentNodeIndex = 0;
-        [SerializeField] private Node<Vector2Int> _currentNode;
-        [SerializeField] private Node<Vector2Int> _destinationNode;
+        private uint _mineTime = 1;
+        private Node<Vector2Int> _currentNode;
+        private Node<Vector2Int> _destinationNode;
+        [SerializeField] private int _maxLoad = 15;
         [SerializeField] private float minerSpeed = 0.3f;
+        public int Minergold { get; private set; }
         [SerializeField] private float mineDistanceDetection = 0.5f;
         [SerializeField] private bool isminerInitialized = false;
 
@@ -49,6 +53,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             _currentNode = grapfView.Grapf.GetNode(RtsNodeType.UrbanCenter);
             SetDestination(RtsNodeType.Mine);
             Action<Node<Vector2Int>> OnsetNode = SetCurrentNode;
+            Action<int> onAddGold = AddGold;
+            Func<int> onGetGold = () => { return Minergold;};
             _minerFsm.Init();
             _minerFsm.AddBehaviour<WalkState>(MinerBehaviours.Walk,
                 onTickParameters: () =>
@@ -83,14 +89,17 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                 {
                     return new object[]
                     {
-                        
+
                     };
                 },
                 onEnterParameters: () =>
                 {
                     return new object[]
                     {
-                        
+                        onAddGold,
+                        onGetGold,
+                        _mineTime,
+                        _maxLoad
                     };
                 },
                 onExitParameters: () =>
@@ -99,12 +108,16 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                     {
                     };
                 });
-            
-            
+
+
             _minerFsm.SetTransition(MinerBehaviours.Walk, MinerFlags.OnMineReach, MinerBehaviours.Mine,
                 () => { Debug.Log("Minardium"); });
-            _minerFsm.SetTransition(MinerBehaviours.Mine, MinerFlags.OnWait, MinerBehaviours.Wait,
-                () => { Debug.Log("Espero"); });
+            _minerFsm.SetTransition(MinerBehaviours.Mine, MinerFlags.OnMaxLoad, MinerBehaviours.Walk,
+                () =>
+                {
+                    Debug.Log("Volvemo");
+                    SetDestination(RtsNodeType.UrbanCenter);
+                });
             _minerFsm.ForceState(MinerBehaviours.Walk);
             isminerInitialized = true;
         }
@@ -118,6 +131,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         {
             _destinationNode = grapfView.Grapf.GetNode(nodeType);
         }
+
+        private void AddGold(int value) => Minergold += value;
 
         private void Update()
         {

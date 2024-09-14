@@ -87,13 +87,14 @@ namespace Pathfinder.Algorithm
             {
                 List<TNodeType> path = new List<TNodeType>();
                 TNodeType currentNode = goalNode;
-
+                
+                
                 while (!NodesEquals(currentNode, startNode))
                 {
                     path.Add(currentNode);
                     currentNode = nodes[currentNode].Parent;
                 }
-
+                path.Add(startNode);
                 path.Reverse();
                 return path;
             }

@@ -47,8 +47,8 @@ namespace FSM
     {
         public Action<Enum> OnFlag;
         public abstract BehaviourActions GetOnEnterBehaviours(params object[] parameters);
-        public abstract BehaviourActions GetOnExitBehaviours(params object[] parameters);
         public abstract BehaviourActions GetOnTickBehaviours(params object[] parameters);
+        public abstract BehaviourActions GetOnExitBehaviours(params object[] parameters);
     }
 
     public sealed class ChaseState : State
