@@ -15,6 +15,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         private float _nodeSeparation = 0.0f;
         private Node<Vector2Int> _startNode;
         private Node<Vector2Int> _destinationNode;
+        private Func <Node<Vector2Int>> _getCurrentNode;
 
         private AStarPathfinder<Node<Vector2Int>, Vector2Int> _pathfinder =
             new AStarPathfinder<Node<Vector2Int>, Vector2Int>();
@@ -39,6 +40,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
                 _startNode = parameters[5] as Node<Vector2Int>;
                 _destinationNode = parameters[6] as Node<Vector2Int>;
                 _onSetCurrentnode = parameters[7] as Action<Node<Vector2Int>>;
+                _getCurrentNode = parameters[8] as Func<Node<Vector2Int>>;
             });
             behaviours.AddMainThreadBehaviour(1, () =>
             {
@@ -91,7 +93,12 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             behaviours.SetTransitionBehaviour(() =>
             {
                 if (_path.Count == 0)
-                    OnFlag.Invoke(MinerFlags.OnMineReach);
+                {
+                    if (_getCurrentNode.Invoke().GetNodeType() == RtsNodeType.Mine)
+                        OnFlag?.Invoke(MinerFlags.OnMineReach);
+                    if (_getCurrentNode.Invoke().GetNodeType() == RtsNodeType.UrbanCenter)
+                        OnFlag?.Invoke(MinerFlags.OnUrbanCenterReach);
+                }
             });
 
             return behaviours;

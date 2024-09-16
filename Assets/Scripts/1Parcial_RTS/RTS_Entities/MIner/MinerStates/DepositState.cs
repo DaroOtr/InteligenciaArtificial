@@ -4,50 +4,43 @@ using UnityEngine;
 
 namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
 {
-    public class MineState : State
+    public class DepositState : State
     {
-        private Action _addGold;
+        private Action<int> _depositGold;
         private Func<int> _getCurrentGold;
-        private int _mineTime;
-        private int _maxLoad;
+        private int _depositTime;
         private float _currentTime = 0;
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
             BehaviourActions behaviours = new BehaviourActions();
-            
-            behaviours.AddMultiThreadBehaviour(0, () =>
-            {
-                _addGold = parameters[0] as Action;
-                _getCurrentGold = parameters[1] as Func<int>;
-                _mineTime = Convert.ToInt32(parameters[2]);
-                _maxLoad = Convert.ToInt32(parameters[3]);
-                _currentTime = 0;
-            });
-            
-            return behaviours;
-        }
-        
-        public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
-        {
-            BehaviourActions behaviours = new BehaviourActions();
-            
-            behaviours.AddMultiThreadBehaviour(0, () =>
-            {
-                if (_currentTime >= _mineTime)
-                {
-                    _addGold?.Invoke();
-                    Debug.Log("Current Gold : " + _getCurrentGold.Invoke());
-                    _currentTime = 0;
-                }
-            });
             behaviours.AddMainThreadBehaviour(0, () =>
             {
-                _currentTime += Time.deltaTime;
+                _depositGold = parameters[0] as Action<int>;
+                _getCurrentGold = parameters[1] as  Func<int>;
+                _depositTime =Convert.ToInt32(parameters[2]);
+            });
+            return behaviours;
+        }
+
+        public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
+        {
+            float delta = Convert.ToSingle(parameters[0]);
+            BehaviourActions behaviours = new BehaviourActions();
+            behaviours.AddMultiThreadBehaviour(0, () =>
+            {
+                if (_currentTime >= _depositTime)
+                {
+                    Debug.Log("Current Gold : " + _getCurrentGold.Invoke());
+                    Debug.Log("Deposit Gold : " + 1);
+                    _depositGold.Invoke(1);
+                    _currentTime = 0;
+                }
+                _currentTime += delta;
             });
             behaviours.SetTransitionBehaviour(() =>
             {
-                if (_getCurrentGold.Invoke() == _maxLoad)
-                    OnFlag?.Invoke(MinerFlags.OnMaxLoad);
+                if (_getCurrentGold.Invoke() == 0)
+                    OnFlag?.Invoke(MinerFlags.OnEmptyLoad);
             });
             return behaviours;
         }
@@ -55,12 +48,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
         {
             BehaviourActions behaviours = new BehaviourActions();
-            
-            behaviours.AddMultiThreadBehaviour(0, () =>
-            {
-                _currentTime = 0;
-            });
-            
+            behaviours.AddMultiThreadBehaviour(0, () => { _currentTime = 0; });
             return behaviours;
         }
     }

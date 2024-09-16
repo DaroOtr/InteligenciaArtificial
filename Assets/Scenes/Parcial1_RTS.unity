@@ -2307,6 +2307,8 @@ MonoBehaviour:
   minerCount: {fileID: 1614856615}
   caravanCount: {fileID: 4659058}
   grapfView: {fileID: 1986333768}
+  _miners:
+  - {fileID: 1506423494}
 --- !u!1 &745092988
 GameObject:
   m_ObjectHideFlags: 0
@@ -3562,7 +3564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4655827b18f60404b8c11bb111dcdb10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grapfView: {fileID: 1986333768}
+  _maxLoad: 15
   minerSpeed: 2
   mineDistanceDetection: 0.01
   isminerInitialized: 0
@@ -4263,18 +4265,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1506423494}
-        m_TargetAssemblyTypeName: _1Parcial_RTS.RTS_Entities.Miner, Assembly-CSharp
-        m_MethodName: InitMiner
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
