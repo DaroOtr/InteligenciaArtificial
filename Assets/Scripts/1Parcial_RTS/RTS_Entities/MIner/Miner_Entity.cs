@@ -55,7 +55,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         [SerializeField] private float mineDistanceDetection = 0.5f;
         [SerializeField] private bool isminerInitialized = false;
 
-        public void InitMiner(Grapf<Node<Vector2Int>> grapf, int nodeSeparation, Func<int, int> minefunction,Action<int> depositAct)
+        public void InitMiner(Grapf<Node<Vector2Int>> grapf, int nodeSeparation, Func<int, int> minefunction,
+            Action<int> depositAct)
         {
             _grapf = grapf;
             _minefunction = minefunction;
@@ -75,8 +76,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             Action onAddGold = AddGold;
             Action<int> onDepositGold = DepositGold;
             Func<int> onGetGold = () => { return Minergold; };
-            Func <Node<Vector2Int>> onGetCurrentNode = GetCurrentNode;
-            
+            Func<Node<Vector2Int>> onGetCurrentNode = GetCurrentNode;
+
             _minerFsm.Init();
             _minerFsm.AddBehaviour<WalkState>(MinerBehaviours.Walk,
                 onTickParameters: () =>
@@ -179,6 +180,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         {
             _currentNode = newNode;
         }
+
         private Node<Vector2Int> GetCurrentNode()
         {
             return _currentNode;
@@ -186,13 +188,15 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
 
         private void SetDestination(RtsNodeType nodeType)
         {
-            _destinationNode = _grapf.GetNode(nodeType);
+            if (!_grapf.GetNode(nodeType).IsBloqued())
+                _destinationNode = _grapf.GetNode(nodeType);
         }
 
         private void AddGold()
         {
             Minergold += _minefunction.Invoke(_currentNode.GetNodeID());
         }
+
         private void DepositGold(int value)
         {
             if (Minergold >= 0)

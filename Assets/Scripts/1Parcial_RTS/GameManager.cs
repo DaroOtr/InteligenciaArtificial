@@ -78,6 +78,23 @@ namespace _1Parcial_RTS
             }
         }
 
+        private Node<Vector2Int> GetClosestMine(Vector3 minerPos)
+        {
+            float distance = float.MaxValue;
+            Node<Vector2Int> closestMine = new Node<Vector2Int>();
+            foreach (KeyValuePair<Node<Vector2Int>,int> mine in _mines)
+            {
+                Vector3 minePos = new Vector3(mine.Key.GetCoordinate().x,mine.Key.GetCoordinate().y);
+                if (Vector3.Distance(minerPos, minePos) < distance)
+                {
+                    distance = Vector3.Distance(minerPos, minePos);
+                    closestMine = mine.Key;
+                }
+            }
+
+            return closestMine;
+        }
+
         private int GetgoldFromMine(int mineIndex)
         {
             Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);

@@ -59,8 +59,11 @@ namespace Pathfinder.Grapf
         {
             foreach (TNodeType node in Nodes)
             {
-                if (node.GetNodeType() == nodeType)
-                    return node;
+                while (!node.IsBloqued())
+                {
+                    if (node.GetNodeType() == nodeType)
+                        return node;
+                }
             }
 
             return new TNodeType();
