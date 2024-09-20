@@ -16,6 +16,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         private Node<Vector2Int> _startNode;
         private Node<Vector2Int> _destinationNode;
         private Func <Node<Vector2Int>> _getCurrentNode;
+        private Func<bool> _onGetAlarmState;
 
         private AStarPathfinder<Node<Vector2Int>, Vector2Int> _pathfinder =
             new AStarPathfinder<Node<Vector2Int>, Vector2Int>();
@@ -28,21 +29,19 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
             Transform ownerTransform = parameters[0] as Transform;
+            _speed = Convert.ToSingle(parameters[1]);
+            _mineDistance = Convert.ToSingle(parameters[2]);
+            _nodeSeparation = Convert.ToSingle(parameters[3]);
+            _grapf = parameters[4] as Grapf<Node<Vector2Int>>;
+            _startNode = parameters[5] as Node<Vector2Int>;
+            _destinationNode = parameters[6] as Node<Vector2Int>;
+            _onSetCurrentnode = parameters[7] as Action<Node<Vector2Int>>;
+            _getCurrentNode = parameters[8] as Func<Node<Vector2Int>>;
+            _onGetAlarmState = parameters[9] as Func<bool>;
 
             BehaviourActions behaviours = new BehaviourActions();
-
-            behaviours.AddMultiThreadBehaviour(0, () =>
-            {
-                _speed = Convert.ToSingle(parameters[1]);
-                _mineDistance = Convert.ToSingle(parameters[2]);
-                _nodeSeparation = Convert.ToSingle(parameters[3]);
-                _grapf = parameters[4] as Grapf<Node<Vector2Int>>;
-                _startNode = parameters[5] as Node<Vector2Int>;
-                _destinationNode = parameters[6] as Node<Vector2Int>;
-                _onSetCurrentnode = parameters[7] as Action<Node<Vector2Int>>;
-                _getCurrentNode = parameters[8] as Func<Node<Vector2Int>>;
-            });
-            behaviours.AddMainThreadBehaviour(1, () =>
+            
+            behaviours.AddMainThreadBehaviour(0, () =>
             {
                 ownerTransform.position = new Vector3(_startNode.GetCoordinate().x * _nodeSeparation, _startNode.GetCoordinate().y * _nodeSeparation);
                 CalculatePath();
@@ -94,10 +93,14 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             {
                 if (_path.Count == 0)
                 {
+                    bool alarmState = _onGetAlarmState.Invoke();
+                    
                     if (_getCurrentNode.Invoke().GetNodeType() == RtsNodeType.Mine)
                         OnFlag?.Invoke(MinerFlags.OnMineReach);
-                    if (_getCurrentNode.Invoke().GetNodeType() == RtsNodeType.UrbanCenter)
+                    if (_getCurrentNode.Invoke().GetNodeType() == RtsNodeType.UrbanCenter && !alarmState)
                         OnFlag?.Invoke(MinerFlags.OnUrbanCenterReach);
+                    if (_getCurrentNode.Invoke().GetNodeType() == RtsNodeType.UrbanCenter && alarmState)
+                        OnFlag?.Invoke(MinerFlags.OnWaitingforOrders);
                 }
             });
 

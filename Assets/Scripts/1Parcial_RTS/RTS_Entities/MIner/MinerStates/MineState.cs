@@ -40,7 +40,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
                 if (_currentTime >= _mineTime)
                 {
                     _addGold?.Invoke();
-                    Debug.Log("Current Gold : " + _getCurrentGold.Invoke());
                     _currentTime = 0;
                 }
 

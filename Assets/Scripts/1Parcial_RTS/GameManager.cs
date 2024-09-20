@@ -91,6 +91,14 @@ namespace _1Parcial_RTS
             }
         }
 
+        public void TogleAlarm()
+        {
+            foreach (Miner miner in _miners)
+            {
+                miner.TogleAlarm();
+            }
+        }
+
         private Node<Vector2Int> GetClosestMine(Vector3 minerPos)
         {
             float distance = float.MaxValue;

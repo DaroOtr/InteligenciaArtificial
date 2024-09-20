@@ -12,14 +12,10 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         private float _currentTime = 0;
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
-            BehaviourActions behaviours = new BehaviourActions();
-            behaviours.AddMainThreadBehaviour(0, () =>
-            {
-                _depositGold = parameters[0] as Action<int>;
-                _getCurrentGold = parameters[1] as  Func<int>;
-                _depositTime =Convert.ToInt32(parameters[2]);
-            });
-            return behaviours;
+            _depositGold = parameters[0] as Action<int>;
+            _getCurrentGold = parameters[1] as  Func<int>;
+            _depositTime =Convert.ToInt32(parameters[2]);
+            return default;
         }
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
@@ -30,8 +26,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             {
                 if (_currentTime >= _depositTime)
                 {
-                    Debug.Log("Current Gold : " + _getCurrentGold.Invoke());
-                    Debug.Log("Deposit Gold : " + 1);
                     _depositGold.Invoke(1);
                     _currentTime = 0;
                 }

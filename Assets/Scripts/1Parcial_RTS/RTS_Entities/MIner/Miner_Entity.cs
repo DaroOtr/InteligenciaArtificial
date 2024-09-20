@@ -4,6 +4,7 @@ using _1Parcial_RTS.RTS_Entities.MIner.MinerStates;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _1Parcial_RTS.RTS_Entities.MIner
 {
@@ -11,7 +12,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
     {
         Walk,
         Mine,
-        Deposit
+        Deposit,
+        Wait
     }
 
     public enum MinerFlags
@@ -20,12 +22,17 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         OnUrbanCenterReach,
         OnMaxLoad,
         OnEmptyLoad,
-        OnEmptyMine
+        OnEmptyMine,
+        OnWaitingforOrders
     }
 
     public class Miner : MonoBehaviour
     {
         public Grapf<Node<Vector2Int>> _grapf;
+        public int Minergold { get; private set; }
+        public int Minerfood { get; private set; }
+        public bool _isAlarmSounded { get; private set; }
+        
         private FSM<MinerBehaviours, MinerFlags> _minerFsm = new FSM<MinerBehaviours, MinerFlags>();
         private uint _minerID;
         private uint _mineTime = 1;
@@ -34,29 +41,45 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         private Node<Vector2Int> _destinationNode;
         private Func<int, int> _minefunction;
         private Func<int, int> _getGoldFunc;
-        private Action<int> onDepositGold;
-        [SerializeField] private int _maxLoad = 15;
-        [SerializeField] private int _maxMinerFood = 3;
+        private Action<int> _onDepositGold;
+        
+        [SerializeField] private int maxLoad = 15;
+        [SerializeField] private int maxMinerFood = 3;
         [SerializeField] private float minerSpeed = 0.3f;
         [SerializeField] private float mineDistanceDetection = 0.5f;
         [SerializeField] private bool isminerInitialized = false;
-        public int Minergold { get; private set; }
-        public int Minerfood { get; private set; }
-
+        
         public void InitMiner(Grapf<Node<Vector2Int>> grapf, int nodeSeparation, Func<int, int> minefunction,
             Action<int> depositAct, Func<int, int> getGoldFunc)
         {
             _grapf = grapf;
             _minefunction = minefunction;
-            onDepositGold = depositAct;
+            _onDepositGold = depositAct;
             _getGoldFunc = getGoldFunc;
             _currentNode = _grapf.GetNode(RtsNodeType.UrbanCenter);
-            SetMinerFood(_maxMinerFood);
+            SetMinerFood(maxMinerFood);
             GetClosestMine();
             SetFsmStates(nodeSeparation);
             SetFsmTransitions();
             _minerFsm.ForceState(MinerBehaviours.Walk);
             isminerInitialized = true;
+        }
+
+        public void TogleAlarm()
+        {
+            if (_destinationNode.GetNodeType() == RtsNodeType.UrbanCenter)
+            {
+                _isAlarmSounded = false;
+                GetClosestMine();
+            }
+            else
+            {
+                _isAlarmSounded = true;
+                SetDestination(RtsNodeType.UrbanCenter);
+            }
+
+            _minerFsm.ForceState(MinerBehaviours.Walk);
+            Debug.LogWarning("ALARM");
         }
 
         private void SetFsmStates(int nodeSeparation)
@@ -65,6 +88,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             Action onAddGold = AddGold;
             Action<int> onDepositGold = DepositGold;
             Func<int> onGetGold = () => { return Minergold; };
+            Func<bool> onGetAlarmState = () => { return _isAlarmSounded; };
             Func<int> onGetMineGold = () => { return GetCurrentMineGold(); };
             Func<Node<Vector2Int>> onGetCurrentNode = GetCurrentNode;
 
@@ -74,7 +98,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                 {
                     return new object[]
                     {
-                        transform
+                        transform,
                     };
                 },
                 onEnterParameters: () =>
@@ -89,7 +113,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                         _currentNode,
                         _destinationNode,
                         onsetNode,
-                        onGetCurrentNode
+                        onGetCurrentNode,
+                        onGetAlarmState
                     };
                 },
                 onExitParameters: () =>
@@ -113,7 +138,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                         onAddGold,
                         onGetGold,
                         _mineTime,
-                        _maxLoad,
+                        maxLoad,
                         onGetMineGold
                     };
                 },
@@ -146,6 +171,27 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                     {
                     };
                 });
+
+            _minerFsm.AddBehaviour<WaitForOrdersState>(MinerBehaviours.Wait,
+                onTickParameters: () =>
+                {
+                    return new object[]
+                    {
+                    };
+                },
+                onEnterParameters: () =>
+                {
+                    return new object[]
+                    {
+                        onGetAlarmState
+                    };
+                },
+                onExitParameters: () =>
+                {
+                    return new object[]
+                    {
+                    };
+                });
         }
 
         private void SetFsmTransitions()
@@ -154,6 +200,10 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                 () => { Debug.Log("Minardium"); });
             _minerFsm.SetTransition(MinerBehaviours.Walk, MinerFlags.OnUrbanCenterReach, MinerBehaviours.Deposit,
                 () => { Debug.Log("Depositanding"); });
+            _minerFsm.SetTransition(MinerBehaviours.Walk, MinerFlags.OnWaitingforOrders, MinerBehaviours.Wait,
+                () => { Debug.Log("Esperando Ordenes"); });
+            _minerFsm.SetTransition(MinerBehaviours.Wait, MinerFlags.OnWaitingforOrders, MinerBehaviours.Walk,
+                () => { Debug.Log("Volvemos A laburar"); });
             _minerFsm.SetTransition(MinerBehaviours.Mine, MinerFlags.OnMaxLoad, MinerBehaviours.Walk,
                 () =>
                 {
@@ -200,7 +250,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             if (Minergold >= 0)
             {
                 Minergold -= value;
-                onDepositGold?.Invoke(value);
+                _onDepositGold?.Invoke(value);
             }
         }
 
