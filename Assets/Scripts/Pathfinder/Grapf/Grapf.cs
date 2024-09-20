@@ -74,7 +74,7 @@ namespace Pathfinder.Grapf
             ICollection<TNodeType> nodeTypes = new List<TNodeType>();
             foreach (TNodeType node in Nodes)
             {
-                if (node.GetNodeType() == nodeType)
+                if (node.GetNodeType() == nodeType && !node.IsBloqued())
                     nodeTypes.Add(node);
             }
 

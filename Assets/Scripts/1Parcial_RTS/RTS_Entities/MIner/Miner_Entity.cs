@@ -218,25 +218,31 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         {
             float distance = float.MaxValue;
             Node<Vector2Int> closestMine = new Node<Vector2Int>();
-            ICollection<Node<Vector2Int>> _mines = _grapf.GetNodesOfType(RtsNodeType.Mine);
-            foreach (Node<Vector2Int> mine in _mines)
+            ICollection<Node<Vector2Int>> _mines = new List<Node<Vector2Int>>();
+            _mines.Clear();
+            _mines = _grapf.GetNodesOfType(RtsNodeType.Mine);
+            Debug.Log("_mines.Count : " + _mines.Count);
+            if (_mines.Count > 0)
             {
-                if (mine != _currentNode && GetCurrentMineGold(mine.GetNodeID()) > 0)
+                foreach (Node<Vector2Int> mine in _mines)
                 {
-                    Vector3 minePos = new Vector3(mine.GetCoordinate().x, mine.GetCoordinate().y);
-                    if (Vector3.Distance(transform.position, minePos) < distance)
+                    if (mine != _currentNode && GetCurrentMineGold(mine.GetNodeID()) > 0)
                     {
-                        distance = Vector3.Distance(transform.position, minePos);
-                        closestMine = mine;
+                        Debug.Log(mine);
+                        Vector3 minePos = new Vector3(mine.GetCoordinate().x, mine.GetCoordinate().y);
+                        if (Vector3.Distance(transform.position, minePos) < distance)
+                        {
+                            distance = Vector3.Distance(transform.position, minePos);
+                            closestMine = mine;
+                        }
                     }
                 }
-            }
-
-            if (!closestMine.IsBloqued())
                 _destinationNode = closestMine;
+            }
             else
+            {
                 SetDestination(RtsNodeType.UrbanCenter);
-            
+            }
             Debug.Log("Closest Mine Index : " + closestMine.GetNodeID());
         }
 

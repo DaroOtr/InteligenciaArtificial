@@ -64,10 +64,17 @@ namespace _1Parcial_RTS
             foreach (Node<Vector2Int> mine in ingameMines)
             {
                 //_mines.Add(mine, Random.Range(0, 30));
-                _mines.Add(mine,100);
+                _mines.Add(mine,5);
                 if (_mines[mine] == 0)
                     mine.SetBlock(true);
             }
+        }
+
+
+        private void Update()
+        {
+            if (_isGameInitialized)
+                CheckForEmptyMines();
         }
 
         private void CheckForEmptyMines()
