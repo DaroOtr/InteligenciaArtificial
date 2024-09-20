@@ -170,7 +170,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                 () =>
                 {
                     Debug.Log("Volvemo a minar");
-                    SetDestination(RtsNodeType.Mine);
+                    GetClosestMine();
                 });
         }
 
@@ -217,12 +217,9 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         private void GetClosestMine()
         {
             float distance = float.MaxValue;
-            Node<Vector2Int> closestMine = new Node<Vector2Int>();
-            ICollection<Node<Vector2Int>> _mines = new List<Node<Vector2Int>>();
-            _mines.Clear();
-            _mines = _grapf.GetNodesOfType(RtsNodeType.Mine);
-            Debug.Log("_mines.Count : " + _mines.Count);
-            if (_mines.Count > 0)
+            int closestMineID = -1;
+            ICollection<Node<Vector2Int>> _mines = _grapf.GetNodesOfType(RtsNodeType.Mine);
+            if (_mines != null && _mines.Count > 0)
             {
                 foreach (Node<Vector2Int> mine in _mines)
                 {
@@ -233,17 +230,22 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                         if (Vector3.Distance(transform.position, minePos) < distance)
                         {
                             distance = Vector3.Distance(transform.position, minePos);
-                            closestMine = mine;
+                            closestMineID = mine.GetNodeID();
                         }
                     }
                 }
-                _destinationNode = closestMine;
+
+                if (closestMineID != -1)
+                    _destinationNode = _grapf.GetNode(closestMineID);
+                else
+                    SetDestination(RtsNodeType.UrbanCenter);
             }
             else
             {
                 SetDestination(RtsNodeType.UrbanCenter);
             }
-            Debug.Log("Closest Mine Index : " + closestMine.GetNodeID());
+
+            Debug.Log("Closest Mine Index : " + closestMineID);
         }
 
         private void Eatfood(int value) => Minerfood -= value;

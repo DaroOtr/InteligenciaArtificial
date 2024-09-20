@@ -6,13 +6,13 @@ using Pathfinder.Node;
 namespace Pathfinder.Grapf
 {
     public class Grapf<TNodeType> : IGrapf<TNodeType>
-        where TNodeType : INode, new() 
+        where TNodeType : INode, new()
     {
         public List<TNodeType> Nodes = new List<TNodeType>();
         private Func<List<TNodeType>> _grapfCrationBehaviour;
         private Action _addNodeNeighborsBehaviour;
         private int _currentNodeId = 0;
-        
+
         public void SetgrapfParameters(Func<List<TNodeType>> grapfCrationMethod, Action addNodeNeighborsBehaviour)
         {
             _grapfCrationBehaviour = grapfCrationMethod;
@@ -36,9 +36,8 @@ namespace Pathfinder.Grapf
             {
                 throw new Exception("NULL :: NODES IN GRAPF");
             }
-           
         }
-        
+
         public void AddNodeNeighbors()
         {
             _addNodeNeighborsBehaviour?.Invoke();
@@ -54,7 +53,7 @@ namespace Pathfinder.Grapf
 
             return new TNodeType();
         }
-        
+
         public TNodeType GetNode(RtsNodeType nodeType)
         {
             foreach (TNodeType node in Nodes)
@@ -74,11 +73,14 @@ namespace Pathfinder.Grapf
             ICollection<TNodeType> nodeTypes = new List<TNodeType>();
             foreach (TNodeType node in Nodes)
             {
-                if (node.GetNodeType() == nodeType && !node.IsBloqued())
+                if (node.GetNodeType() == nodeType)
                     nodeTypes.Add(node);
             }
 
-            return nodeTypes;
+            if (nodeTypes.Count > 0)
+                return nodeTypes;
+            
+            return null;
         }
 
         public List<TNodeType> GetNodes()
@@ -86,14 +88,14 @@ namespace Pathfinder.Grapf
             return Nodes;
         }
 
-        public void SetNodeCost(int nodeId,int nodeCost)
+        public void SetNodeCost(int nodeId, int nodeCost)
         {
             GetNode(nodeId).SetNodeCost(nodeCost);
         }
 
-        public void SetNodeTransitionCost(int fromNodeId, int toNodeId,int transitionCost)
+        public void SetNodeTransitionCost(int fromNodeId, int toNodeId, int transitionCost)
         {
-            GetNode(fromNodeId).SetNeighborTransitionCost(toNodeId,transitionCost);
+            GetNode(fromNodeId).SetNeighborTransitionCost(toNodeId, transitionCost);
         }
 
         public IEnumerator<TNodeType> GetEnumerator()
@@ -123,7 +125,7 @@ namespace Pathfinder.Grapf
 
         public void CopyTo(TNodeType[] array, int arrayIndex)
         {
-            Nodes.CopyTo(array,arrayIndex);
+            Nodes.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(TNodeType item)
@@ -131,19 +133,14 @@ namespace Pathfinder.Grapf
             return Nodes.Remove(item);
         }
 
-        public int Count {
-            get
-            {
-                return Nodes.Count;
-            }
+        public int Count
+        {
+            get { return Nodes.Count; }
         }
 
         public bool IsReadOnly
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
     }
 }

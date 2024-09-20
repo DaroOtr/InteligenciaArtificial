@@ -82,8 +82,12 @@ namespace _1Parcial_RTS
             ICollection<Node<Vector2Int>> ingameMines = grapfView.Grapf.GetNodesOfType(RtsNodeType.Mine);
             foreach (Node<Vector2Int> mine in ingameMines)
             {
-                if (_mines[mine] == 0)
-                    mine.SetBlock(true);
+                if (_mines.ContainsKey(mine))
+                {
+                    _mines.TryGetValue(mine, out int mineGold);
+                    if (mineGold <= 0)
+                        mine.SetBlock(true);
+                }
             }
         }
 
