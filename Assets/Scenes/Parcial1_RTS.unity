@@ -3565,6 +3565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxLoad: 15
+  _maxMinerFood: 3
   minerSpeed: 2
   mineDistanceDetection: 0.01
   isminerInitialized: 0
@@ -4249,10 +4250,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 680793440}
-        m_TargetAssemblyTypeName: _1Parcial_RTS.GameManager, Assembly-CSharp
-        m_MethodName: InitGame
-        m_Mode: 1
+      - m_Target: {fileID: 2003859172}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4261,10 +4262,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2003859172}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 680793440}
+        m_TargetAssemblyTypeName: _1Parcial_RTS.GameManager, Assembly-CSharp
+        m_MethodName: InitGame
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

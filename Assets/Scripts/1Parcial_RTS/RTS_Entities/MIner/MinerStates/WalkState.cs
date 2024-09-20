@@ -108,5 +108,23 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
         {
             _path = _pathfinder.FindPath(_startNode, _destinationNode, _grapf);
         }
+        
+        private Node<Vector2Int> GetClosestMine(Vector3 minerPos)
+        {
+            float distance = float.MaxValue;
+            Node<Vector2Int> closestMine = new Node<Vector2Int>();
+            ICollection<Node<Vector2Int>> _mines = _grapf.GetNodesOfType(RtsNodeType.Mine);
+            foreach (Node<Vector2Int> mine in _mines)
+            {
+                Vector3 minePos = new Vector3(mine.GetCoordinate().x,mine.GetCoordinate().y);
+                if (Vector3.Distance(minerPos, minePos) < distance)
+                {
+                    distance = Vector3.Distance(minerPos, minePos);
+                    closestMine = mine;
+                }
+            }
+
+            return closestMine;
+        }
     }
 }

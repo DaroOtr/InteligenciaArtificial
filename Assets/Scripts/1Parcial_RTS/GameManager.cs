@@ -20,7 +20,7 @@ namespace _1Parcial_RTS
         [SerializeField] private GrapfView grapfView;
         [SerializeField] private List<Miner> _miners;
         private Dictionary<Node<Vector2Int>, int> _mines = new Dictionary<Node<Vector2Int>, int>();
-        private (Node<Vector2Int>,int) _urbanCenter = new ValueTuple<Node<Vector2Int>, int>();
+        private (Node<Vector2Int> urbanCenterNode,int urbanCenterGold) _urbanCenter = new ValueTuple<Node<Vector2Int>, int>();
         private int _width = 0;
         private int _height = 0;
         private int _separation = 0;
@@ -34,18 +34,19 @@ namespace _1Parcial_RTS
             SetIngameParameters();
             InitGrapf();
             InitMines();
-            CheckForEmptyMines();
             InitMiners();
             _isGameInitialized = true;
         }
 
         private void InitMiners()
         {
-            Func<int, int> mineFuc = GetgoldFromMine;
+            Func<int, int> mineFuc = MinegoldFromMine;
+            Func<int, int> getGoldFunc = GetGoldFromMine;
             Action<int> depositAct = DepositGold;
+            Func<Vector3,Node<Vector2Int>> recalculatePathFunc = GetClosestMine;
             foreach (Miner miner in _miners)
             {
-                miner.InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc,depositAct);
+                miner.InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc,depositAct,getGoldFunc);
             }
         }
 
@@ -53,8 +54,8 @@ namespace _1Parcial_RTS
         {
             grapfView.SetGrapfCreationParams(_width, _height, _separation, _mineCount);
             grapfView.InitGrapf();
-            _urbanCenter.Item1 = grapfView.Grapf.GetNode(RtsNodeType.UrbanCenter);
-            _urbanCenter.Item2 = 0;
+            _urbanCenter.urbanCenterNode = grapfView.Grapf.GetNode(RtsNodeType.UrbanCenter);
+            _urbanCenter.urbanCenterGold = 0;
         }
 
         private void InitMines()
@@ -62,7 +63,8 @@ namespace _1Parcial_RTS
             ICollection<Node<Vector2Int>> ingameMines = grapfView.Grapf.GetNodesOfType(RtsNodeType.Mine);
             foreach (Node<Vector2Int> mine in ingameMines)
             {
-                _mines.Add(mine, Random.Range(0, 30));
+                //_mines.Add(mine, Random.Range(0, 30));
+                _mines.Add(mine,100);
                 if (_mines[mine] == 0)
                     mine.SetBlock(true);
             }
@@ -95,25 +97,46 @@ namespace _1Parcial_RTS
             return closestMine;
         }
 
-        private int GetgoldFromMine(int mineIndex)
+        private int MinegoldFromMine(int mineIndex)
         {
             Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
-            if (_mines.ContainsKey(mine) && _mines[mine] > 0)
+            if (_mines.ContainsKey(mine))
             {
-                _mines[mine]--;
-                Debug.Log("Mine Index : " + mineIndex);
-                Debug.Log("Current Mine Gold : " + _mines[mine]);
-                return 1;
+                if (_mines[mine] > 0)
+                {
+                    _mines[mine]--;
+                    Debug.Log("Mine Index : " + mineIndex);
+                    Debug.Log("Current Mine Gold : " + _mines[mine]);
+                    return 1;
+                }
+                else
+                {
+                    Debug.Log("Mine Index : " + mineIndex + " NO MORE GOLD");
+                    return 0;
+                }
+                
+            }
+
+            Debug.Log("Error searching for the specified mine");
+            return -1;
+        }
+
+        private int GetGoldFromMine(int mineIndex)
+        {
+            Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
+            if (_mines.ContainsKey(mine))
+            {
+                return _mines[mine];
             }
 
 
             Debug.Log("Error searching for the specified mine");
-            return 0;
+            return -1;
         }
 
         private void DepositGold(int value)
         {
-            _urbanCenter.Item2 += value;
+            _urbanCenter.urbanCenterGold += value;
         }
 
         private void SetIngameParameters()
@@ -147,12 +170,6 @@ namespace _1Parcial_RTS
                 _caravanCount = 1;
             else
                 _caravanCount = int.Parse(caravanCount.text);
-        }
-
-        private void Update()
-        {
-            if (_isGameInitialized)
-                CheckForEmptyMines();
         }
     }
 }

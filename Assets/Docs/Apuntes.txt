@@ -8,6 +8,7 @@ Comando Para Buscar en el archivo : Ctrl + F
 Comando Para Cambiar el nombre de un objeto en toda la solucion : Ctrl + R + R
 Comando Para Cerrar una bracket : Ctrl + M + M
 Comando Para Cerrar todas las bracket : Ctrl + M + O
+Comando Para Sacar todos los break points : Ctrl + Shift + F9
 
 
 Grafo es una susecion lineal de nodos 
