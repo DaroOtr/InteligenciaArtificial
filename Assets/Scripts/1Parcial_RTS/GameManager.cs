@@ -4,6 +4,7 @@ using _1Parcial_RTS.RTS_Entities.MIner;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -19,8 +20,12 @@ namespace _1Parcial_RTS
         [SerializeField] private InputField caravanCount;
         [SerializeField] private GrapfView grapfView;
         [SerializeField] private List<Miner> _miners;
+        [SerializeField] private GameObject minerPrefab;
         private Dictionary<Node<Vector2Int>, int> _mines = new Dictionary<Node<Vector2Int>, int>();
-        private (Node<Vector2Int> urbanCenterNode,int urbanCenterGold) _urbanCenter = new ValueTuple<Node<Vector2Int>, int>();
+
+        private (Node<Vector2Int> urbanCenterNode, int urbanCenterGold) _urbanCenter =
+            new ValueTuple<Node<Vector2Int>, int>();
+
         private int _width = 0;
         private int _height = 0;
         private int _separation = 0;
@@ -43,10 +48,9 @@ namespace _1Parcial_RTS
             Func<int, int> mineFuc = MinegoldFromMine;
             Func<int, int> getGoldFunc = GetGoldFromMine;
             Action<int> depositAct = DepositGold;
-            Func<Vector3,Node<Vector2Int>> recalculatePathFunc = GetClosestMine;
             foreach (Miner miner in _miners)
             {
-                miner.InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc,depositAct,getGoldFunc);
+                miner.InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc, depositAct, getGoldFunc);
             }
         }
 
@@ -64,7 +68,7 @@ namespace _1Parcial_RTS
             foreach (Node<Vector2Int> mine in ingameMines)
             {
                 //_mines.Add(mine, Random.Range(0, 30));
-                _mines.Add(mine,5);
+                _mines.Add(mine, 5);
                 if (_mines[mine] == 0)
                     mine.SetBlock(true);
             }
@@ -103,9 +107,9 @@ namespace _1Parcial_RTS
         {
             float distance = float.MaxValue;
             Node<Vector2Int> closestMine = new Node<Vector2Int>();
-            foreach (KeyValuePair<Node<Vector2Int>,int> mine in _mines)
+            foreach (KeyValuePair<Node<Vector2Int>, int> mine in _mines)
             {
-                Vector3 minePos = new Vector3(mine.Key.GetCoordinate().x,mine.Key.GetCoordinate().y);
+                Vector3 minePos = new Vector3(mine.Key.GetCoordinate().x, mine.Key.GetCoordinate().y);
                 if (Vector3.Distance(minerPos, minePos) < distance)
                 {
                     distance = Vector3.Distance(minerPos, minePos);
@@ -124,16 +128,12 @@ namespace _1Parcial_RTS
                 if (_mines[mine] > 0)
                 {
                     _mines[mine]--;
-                    Debug.Log("Mine Index : " + mineIndex);
-                    Debug.Log("Current Mine Gold : " + _mines[mine]);
                     return 1;
                 }
                 else
                 {
-                    Debug.Log("Mine Index : " + mineIndex + " NO MORE GOLD");
                     return 0;
                 }
-                
             }
 
             Debug.Log("Error searching for the specified mine");
@@ -147,15 +147,23 @@ namespace _1Parcial_RTS
             {
                 return _mines[mine];
             }
-
-
-            Debug.Log("Error searching for the specified mine");
-            return -1;
+            else
+                return -1;
         }
 
         private void DepositGold(int value)
         {
             _urbanCenter.urbanCenterGold += value;
+        }
+
+        public void SpawnMiner()
+        {
+            Func<int, int> mineFuc = MinegoldFromMine;
+            Func<int, int> getGoldFunc = GetGoldFromMine;
+            Action<int> depositAct = DepositGold;
+            GameObject newMiner = Instantiate(minerPrefab);
+            _miners.Add(newMiner.GetComponent<Miner>());
+            newMiner.GetComponent<Miner>().InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc, depositAct, getGoldFunc);
         }
 
         private void SetIngameParameters()

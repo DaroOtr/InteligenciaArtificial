@@ -275,7 +275,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                 {
                     if (mine != _currentNode && GetCurrentMineGold(mine.GetNodeID()) > 0)
                     {
-                        Debug.Log(mine);
                         Vector3 minePos = new Vector3(mine.GetCoordinate().x, mine.GetCoordinate().y);
                         if (Vector3.Distance(transform.position, minePos) < distance)
                         {
@@ -294,8 +293,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             {
                 SetDestination(RtsNodeType.UrbanCenter);
             }
-
-            Debug.Log("Closest Mine Index : " + closestMineID);
         }
 
         private void Eatfood(int value) => Minerfood -= value;
