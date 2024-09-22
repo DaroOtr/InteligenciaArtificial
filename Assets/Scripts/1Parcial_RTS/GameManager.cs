@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _1Parcial_RTS.RTS_Entities.Caravan;
 using _1Parcial_RTS.RTS_Entities.MIner;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
@@ -20,11 +21,14 @@ namespace _1Parcial_RTS
         [SerializeField] private InputField caravanCount;
         [SerializeField] private GrapfView grapfView;
         [SerializeField] private List<Miner> _miners;
+        [SerializeField] private List<Caravan> _caravans;
         [SerializeField] private GameObject minerPrefab;
-        private Dictionary<Node<Vector2Int>, int> _mines = new Dictionary<Node<Vector2Int>, int>();
+        [SerializeField] private GameObject caravanPrefab;
+        [SerializeField] private int initialUrbanCenterFood = 100;
+        private Dictionary<Node<Vector2Int>,(int gold,int food,int minersCount)> _mines = new Dictionary<Node<Vector2Int>, (int gold, int food, int minersCount)>();
 
-        private (Node<Vector2Int> urbanCenterNode, int urbanCenterGold) _urbanCenter =
-            new ValueTuple<Node<Vector2Int>, int>();
+        private (Node<Vector2Int> urbanCenterNode, int urbanCenterGold,int urbanCenterFood) _urbanCenter =
+            new ValueTuple<Node<Vector2Int>, int, int>();
 
         private int _width = 0;
         private int _height = 0;
@@ -39,27 +43,18 @@ namespace _1Parcial_RTS
             SetIngameParameters();
             InitGrapf();
             InitMines();
-            InitMiners();
+            SpawnMiner();
+            SpawnCaravan();
             _isGameInitialized = true;
         }
-
-        private void InitMiners()
-        {
-            Func<int, int> mineFuc = MinegoldFromMine;
-            Func<int, int> getGoldFunc = GetGoldFromMine;
-            Action<int> depositAct = DepositGold;
-            foreach (Miner miner in _miners)
-            {
-                miner.InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc, depositAct, getGoldFunc);
-            }
-        }
-
+        
         private void InitGrapf()
         {
             grapfView.SetGrapfCreationParams(_width, _height, _separation, _mineCount);
             grapfView.InitGrapf();
             _urbanCenter.urbanCenterNode = grapfView.Grapf.GetNode(RtsNodeType.UrbanCenter);
             _urbanCenter.urbanCenterGold = 0;
+            _urbanCenter.urbanCenterFood = initialUrbanCenterFood;
         }
 
         private void InitMines()
@@ -67,9 +62,8 @@ namespace _1Parcial_RTS
             ICollection<Node<Vector2Int>> ingameMines = grapfView.Grapf.GetNodesOfType(RtsNodeType.Mine);
             foreach (Node<Vector2Int> mine in ingameMines)
             {
-                //_mines.Add(mine, Random.Range(0, 30));
-                _mines.Add(mine, 5);
-                if (_mines[mine] == 0)
+                _mines.Add(mine,(5,0,0));
+                if (_mines[mine].gold == 0)
                     mine.SetBlock(true);
             }
         }
@@ -88,8 +82,8 @@ namespace _1Parcial_RTS
             {
                 if (_mines.ContainsKey(mine))
                 {
-                    _mines.TryGetValue(mine, out int mineGold);
-                    if (mineGold <= 0)
+                    _mines.TryGetValue(mine, out (int gold, int food, int minersCount) mineLoad);
+                    if (mineLoad.gold <= 0)
                         mine.SetBlock(true);
                 }
             }
@@ -101,13 +95,18 @@ namespace _1Parcial_RTS
             {
                 miner.TogleAlarm();
             }
+
+            foreach (Caravan caravan in _caravans)
+            {
+                caravan.TogleAlarm();
+            }
         }
 
         private Node<Vector2Int> GetClosestMine(Vector3 minerPos)
         {
             float distance = float.MaxValue;
             Node<Vector2Int> closestMine = new Node<Vector2Int>();
-            foreach (KeyValuePair<Node<Vector2Int>, int> mine in _mines)
+            foreach (KeyValuePair<Node<Vector2Int>, (int gold, int food, int minersCount)> mine in _mines)
             {
                 Vector3 minePos = new Vector3(mine.Key.GetCoordinate().x, mine.Key.GetCoordinate().y);
                 if (Vector3.Distance(minerPos, minePos) < distance)
@@ -125,9 +124,10 @@ namespace _1Parcial_RTS
             Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
             if (_mines.ContainsKey(mine))
             {
-                if (_mines[mine] > 0)
+                (int gold, int food, int minersCount) tuple = _mines[mine];
+                if (tuple.gold > 0)
                 {
-                    _mines[mine]--;
+                    tuple.gold--;
                     return 1;
                 }
                 else
@@ -140,12 +140,36 @@ namespace _1Parcial_RTS
             return -1;
         }
 
+        private void ModifyMinersCount(int mineIndex,int value)
+        {
+            Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
+            if (_mines.ContainsKey(mine))
+            {
+                (int gold, int food, int minersCount) tuple = _mines[mine];
+                tuple.minersCount += value;
+            }
+        }
+
+        private int GetWorkingMinersCountFromMine(int mineIndex)
+        {
+            Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
+            if (_mines.ContainsKey(mine))
+            {
+                (int gold, int food, int minersCount) tuple = _mines[mine];
+                return tuple.minersCount;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
         private int GetGoldFromMine(int mineIndex)
         {
             Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
             if (_mines.ContainsKey(mine))
             {
-                return _mines[mine];
+                return _mines[mine].gold;
             }
             else
                 return -1;
@@ -156,6 +180,11 @@ namespace _1Parcial_RTS
             _urbanCenter.urbanCenterGold += value;
         }
 
+        private void DepositFood(int value)
+        {
+            _urbanCenter.urbanCenterFood += value;
+        }
+
         public void SpawnMiner()
         {
             Func<int, int> mineFuc = MinegoldFromMine;
@@ -164,6 +193,14 @@ namespace _1Parcial_RTS
             GameObject newMiner = Instantiate(minerPrefab);
             _miners.Add(newMiner.GetComponent<Miner>());
             newMiner.GetComponent<Miner>().InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc, depositAct, getGoldFunc);
+        }
+
+        public void SpawnCaravan()
+        {
+            Action<int> depositAct = DepositFood;
+            GameObject newCaravan = Instantiate(caravanPrefab);
+            _caravans.Add(newCaravan.GetComponent<Caravan>());
+            newCaravan.GetComponent<Caravan>().InitCaravan(grapfView.Grapf, grapfView._nodeSeparation, depositAct);
         }
 
         private void SetIngameParameters()

@@ -6,13 +6,13 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
 {
     public class DepositState : State
     {
-        private Action<int> _depositGold;
+        private Action<int> _deposit;
         private Func<int> _getCurrentGold;
         private int _depositTime;
         private float _currentTime = 0;
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
-            _depositGold = parameters[0] as Action<int>;
+            _deposit = parameters[0] as Action<int>;
             _getCurrentGold = parameters[1] as  Func<int>;
             _depositTime =Convert.ToInt32(parameters[2]);
             return default;
@@ -26,7 +26,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
             {
                 if (_currentTime >= _depositTime)
                 {
-                    _depositGold.Invoke(1);
+                    _deposit.Invoke(1);
                     _currentTime = 0;
                 }
                 _currentTime += delta;
