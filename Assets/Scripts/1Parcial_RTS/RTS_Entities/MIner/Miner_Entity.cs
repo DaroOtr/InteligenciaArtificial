@@ -4,7 +4,6 @@ using _1Parcial_RTS.RTS_Entities.MIner.MinerStates;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _1Parcial_RTS.RTS_Entities.MIner
 {
@@ -13,7 +12,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         Walk,
         Mine,
         Deposit,
-        Wait
+        Wait,
+        WaitForFood
     }
 
     public enum MinerFlags
@@ -23,7 +23,9 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         OnMaxLoad,
         OnEmptyLoad,
         OnEmptyMine,
-        OnWaitingforOrders
+        OnWaitingforOrders,
+        OnFoodRecovered,
+        OnEmptyStomach
     }
 
     public class Miner : MonoBehaviour
@@ -41,6 +43,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         private Node<Vector2Int> _destinationNode;
         private Func<int, int> _minefunction;
         private Func<int, int> _getGoldFunc;
+        private Func<int, int> _getFoodFunc;
         private Action<int> _onDepositGold;
         
         [SerializeField] private int maxLoad = 15;
@@ -50,12 +53,13 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         [SerializeField] private bool isminerInitialized = false;
         
         public void InitMiner(Grapf<Node<Vector2Int>> grapf, int nodeSeparation, Func<int, int> minefunction,
-            Action<int> depositAct, Func<int, int> getGoldFunc)
+            Action<int> depositAct, Func<int, int> getGoldFunc,Func<int, int> getFoodFunc)
         {
             _grapf = grapf;
             _minefunction = minefunction;
             _onDepositGold = depositAct;
             _getGoldFunc = getGoldFunc;
+            _getFoodFunc = getFoodFunc;
             _currentNode = _grapf.GetNode(RtsNodeType.UrbanCenter);
             SetMinerFood(maxMinerFood);
             GetClosestMine();
@@ -86,8 +90,11 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         {
             Action<Node<Vector2Int>> onsetNode = SetCurrentNode;
             Action onAddGold = AddGold;
+            Action onAddFood = AddMinerFood;
             Action<int> onDepositGold = DepositGold;
+            Action<int> onEatFood = Eatfood;
             Func<int> onGetGold = () => { return Minergold; };
+            Func<int> onGetFood = () => { return Minerfood; };
             Func<bool> onGetAlarmState = () => { return _isAlarmSounded; };
             Func<int> onGetMineGold = () => { return GetCurrentMineGold(); };
             Func<Node<Vector2Int>> onGetCurrentNode = GetCurrentNode;
@@ -137,9 +144,12 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                     {
                         onAddGold,
                         onGetGold,
+                        onGetFood,
                         _mineTime,
                         maxLoad,
-                        onGetMineGold
+                        onGetMineGold,
+                        onEatFood,
+                        maxMinerFood
                     };
                 },
                 onExitParameters: () =>
@@ -183,7 +193,30 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                 {
                     return new object[]
                     {
-                        onGetAlarmState
+                        onGetAlarmState,
+                    };
+                },
+                onExitParameters: () =>
+                {
+                    return new object[]
+                    {
+                    };
+                });
+            
+            _minerFsm.AddBehaviour<WaitForFood>(MinerBehaviours.WaitForFood,
+                onTickParameters: () =>
+                {
+                    return new object[]
+                    {
+                    };
+                },
+                onEnterParameters: () =>
+                {
+                    return new object[]
+                    {
+                        onGetFood,
+                        onAddFood,
+                        maxMinerFood
                     };
                 },
                 onExitParameters: () =>
@@ -204,6 +237,10 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
                 () => { Debug.Log("Esperando Ordenes"); });
             _minerFsm.SetTransition(MinerBehaviours.Wait, MinerFlags.OnWaitingforOrders, MinerBehaviours.Walk,
                 () => { Debug.Log("Volvemos A laburar"); });
+            _minerFsm.SetTransition(MinerBehaviours.WaitForFood, MinerFlags.OnFoodRecovered, MinerBehaviours.Mine,
+                () => { Debug.Log("Food Recovered"); });
+            _minerFsm.SetTransition(MinerBehaviours.Mine, MinerFlags.OnEmptyStomach, MinerBehaviours.WaitForFood,
+                () => { Debug.Log("huelga"); });
             _minerFsm.SetTransition(MinerBehaviours.Mine, MinerFlags.OnMaxLoad, MinerBehaviours.Walk,
                 () =>
                 {
@@ -296,7 +333,16 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         }
 
         private void Eatfood(int value) => Minerfood -= value;
-        private void SetMinerFood(int value) => Minerfood = value;
+
+        private void SetMinerFood(int value)
+        {
+            Minerfood = value;
+        }
+
+        private void AddMinerFood()
+        {
+           Minerfood += _getFoodFunc.Invoke(_currentNode.GetNodeID());
+        }
 
         private void Update()
         {
