@@ -5,9 +5,7 @@ using _1Parcial_RTS.RTS_Entities.MIner;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace _1Parcial_RTS
 {
@@ -25,6 +23,7 @@ namespace _1Parcial_RTS
         [SerializeField] private GameObject minerPrefab;
         [SerializeField] private GameObject caravanPrefab;
         [SerializeField] private int initialUrbanCenterFood = 100;
+        private VoronoidController coronoid = new VoronoidController();
         private Dictionary<Node<Vector2Int>,(int gold,int food,int minersCount)> _mines = new Dictionary<Node<Vector2Int>, (int gold, int food, int minersCount)>();
 
         private (Node<Vector2Int> urbanCenterNode, int urbanCenterGold,int urbanCenterFood) _urbanCenter =
@@ -45,6 +44,7 @@ namespace _1Parcial_RTS
             InitMines();
             SpawnMiner();
             SpawnCaravan();
+            InitVoronoi();
             _isGameInitialized = true;
         }
         
@@ -55,6 +55,11 @@ namespace _1Parcial_RTS
             _urbanCenter.urbanCenterNode = grapfView.Grapf.GetNode(RtsNodeType.UrbanCenter);
             _urbanCenter.urbanCenterGold = 0;
             _urbanCenter.urbanCenterFood = initialUrbanCenterFood;
+        }
+
+        private void InitVoronoi()
+        {
+            coronoid.InitVoronoid(_width,_height,_mineCount,grapfView.Grapf);
         }
 
         private void InitMines()
@@ -234,6 +239,11 @@ namespace _1Parcial_RTS
                 _caravanCount = 1;
             else
                 _caravanCount = int.Parse(caravanCount.text);
+        }
+
+        private void OnDrawGizmos()
+        {
+           // coronoid.OnDrawGizmos();
         }
     }
 }

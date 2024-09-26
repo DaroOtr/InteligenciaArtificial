@@ -5,6 +5,7 @@ using Pathfinder.Algorithm;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
+using Voronoi;
 using Random = UnityEngine.Random;
 
 public class Voronoid : MonoBehaviour
@@ -15,9 +16,9 @@ public class Voronoid : MonoBehaviour
     public int _nodeSeparation = 1;
     private int _grapfMaxWidth = 11;
     private int _grapfMaxHeight = 11;
-    private int _mineCount = 37;
+    private int _mineCount = 5;
     private bool _isGrapfInitialized = false;
-    [SerializeField] private VoronoidController coronoid = new VoronoidController();
+    [SerializeField] private VoronoiMap coronoid = new VoronoiMap();
 
     // Start is called before the first frame update
     void Start()
@@ -93,7 +94,13 @@ public class Voronoid : MonoBehaviour
         coronoid.InitVoronoid(_grapfMaxWidth,_grapfMaxHeight,_mineCount,_grapf);
         _isGrapfInitialized = true;
     }
-    
+    [ContextMenu("RemoveMine")]
+    public void RemoveMine()
+    {
+        _grapf.GetNode(RtsNodeType.Mine).SetBlock(true);
+        coronoid.ReCalculateVoronoiMap();
+    }
+
     public void SetInitialNodes()
     {
         List<Node<Vector2Int>> minesPLaced = new List<Node<Vector2Int>>();
@@ -161,5 +168,7 @@ public class Voronoid : MonoBehaviour
                 limit.GetCoordinate().y * _nodeSeparation);
             Gizmos.DrawWireSphere(limitCordinates, 0.2f);
         }
+
+        coronoid.OnDrawGizmos();
     }
 }
