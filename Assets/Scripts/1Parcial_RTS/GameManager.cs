@@ -6,6 +6,7 @@ using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
 using UnityEngine.UI;
+using Voronoi;
 
 namespace _1Parcial_RTS
 {
@@ -23,7 +24,7 @@ namespace _1Parcial_RTS
         [SerializeField] private GameObject minerPrefab;
         [SerializeField] private GameObject caravanPrefab;
         [SerializeField] private int initialUrbanCenterFood = 100;
-        private VoronoidController coronoid = new VoronoidController();
+        private VoronoiMap voronoiMap = new VoronoiMap();
         private Dictionary<Node<Vector2Int>,(int gold,int food,int minersCount)> _mines = new Dictionary<Node<Vector2Int>, (int gold, int food, int minersCount)>();
 
         private (Node<Vector2Int> urbanCenterNode, int urbanCenterGold,int urbanCenterFood) _urbanCenter =
@@ -59,7 +60,7 @@ namespace _1Parcial_RTS
 
         private void InitVoronoi()
         {
-            coronoid.InitVoronoid(_width,_height,_mineCount,grapfView.Grapf);
+            voronoiMap.InitVoronoid(_width,_height,_mineCount,grapfView.Grapf);
         }
 
         private void InitMines()
@@ -67,7 +68,7 @@ namespace _1Parcial_RTS
             ICollection<Node<Vector2Int>> ingameMines = grapfView.Grapf.GetNodesOfType(RtsNodeType.Mine);
             foreach (Node<Vector2Int> mine in ingameMines)
             {
-                _mines.Add(mine,(5,0,0));
+                _mines.Add(mine,(5,100,0));
                 if (_mines[mine].gold == 0)
                     mine.SetBlock(true);
             }
@@ -145,6 +146,20 @@ namespace _1Parcial_RTS
             return -1;
         }
 
+        private int GetFoodFromMine(int mineIndex)
+        {
+            Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
+            if (_mines.ContainsKey(mine))
+            {
+                (int gold, int food, int minersCount) tuple = _mines[mine];
+                tuple.food--;
+                int retrivedFood = 1;
+                return retrivedFood;
+            }
+            else 
+                return -1;
+        }
+
         private void ModifyMinersCount(int mineIndex,int value)
         {
             Node<Vector2Int> mine = grapfView.Grapf.GetNode(mineIndex);
@@ -194,10 +209,11 @@ namespace _1Parcial_RTS
         {
             Func<int, int> mineFuc = MinegoldFromMine;
             Func<int, int> getGoldFunc = GetGoldFromMine;
+            Func<int, int> getFoodFromMine = GetFoodFromMine;
             Action<int> depositAct = DepositGold;
             GameObject newMiner = Instantiate(minerPrefab);
             _miners.Add(newMiner.GetComponent<Miner>());
-            newMiner.GetComponent<Miner>().InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc, depositAct, getGoldFunc);
+            newMiner.GetComponent<Miner>().InitMiner(grapfView.Grapf, grapfView._nodeSeparation, mineFuc, depositAct, getGoldFunc,getFoodFromMine);
         }
 
         public void SpawnCaravan()
