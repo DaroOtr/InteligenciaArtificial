@@ -45,7 +45,6 @@ namespace _1Parcial_RTS
             InitMines();
             SpawnMiner();
             SpawnCaravan();
-            InitVoronoi();
             _isGameInitialized = true;
         }
         
@@ -57,12 +56,7 @@ namespace _1Parcial_RTS
             _urbanCenter.urbanCenterGold = 0;
             _urbanCenter.urbanCenterFood = initialUrbanCenterFood;
         }
-
-        private void InitVoronoi()
-        {
-            voronoiMap.InitVoronoid(_width,_height,_mineCount,grapfView.Grapf);
-        }
-
+        
         private void InitMines()
         {
             ICollection<Node<Vector2Int>> ingameMines = grapfView.Grapf.GetNodesOfType(RtsNodeType.Mine);

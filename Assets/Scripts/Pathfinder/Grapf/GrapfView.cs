@@ -83,7 +83,7 @@ namespace Pathfinder.Grapf
                             }
                         }
                     }
-                });
+                },_grapfWidth,_grapfHeight);
 
             Grapf.InitGrapf();
             foreach (Node<Vector2Int> node in Grapf.GetNodes())

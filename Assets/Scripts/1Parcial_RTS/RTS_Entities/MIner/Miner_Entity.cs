@@ -4,6 +4,7 @@ using _1Parcial_RTS.RTS_Entities.MIner.MinerStates;
 using Pathfinder.Grapf;
 using Pathfinder.Node;
 using UnityEngine;
+using Voronoi;
 
 namespace _1Parcial_RTS.RTS_Entities.MIner
 {
@@ -51,6 +52,7 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
         [SerializeField] private float minerSpeed = 0.3f;
         [SerializeField] private float mineDistanceDetection = 0.5f;
         [SerializeField] private bool isminerInitialized = false;
+        private VoronoiMap voronoiMap = new VoronoiMap();
         
         public void InitMiner(Grapf<Node<Vector2Int>> grapf, int nodeSeparation, Func<int, int> minefunction,
             Action<int> depositAct, Func<int, int> getGoldFunc,Func<int, int> getFoodFunc)
@@ -62,9 +64,10 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             _getFoodFunc = getFoodFunc;
             _currentNode = _grapf.GetNode(RtsNodeType.UrbanCenter);
             SetMinerFood(maxMinerFood);
-            GetClosestMine();
             SetFsmStates(nodeSeparation);
             SetFsmTransitions();
+            voronoiMap.InitVoronoid(grapf._grapfMaxWidth,grapf._grapfMaxHeight,grapf);
+            GetClosestMine();
             _minerFsm.ForceState(MinerBehaviours.Walk);
             isminerInitialized = true;
         }
@@ -303,32 +306,12 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
 
         private void GetClosestMine()
         {
-            float distance = float.MaxValue;
-            int closestMineID = -1;
-            ICollection<Node<Vector2Int>> _mines = _grapf.GetNodesOfType(RtsNodeType.Mine);
-            if (_mines != null && _mines.Count > 0)
+            Vector2? temp = voronoiMap.GetClosestInterestPoint(transform.position);
+            Debug.Log("temp " + temp);
+            foreach (Node<Vector2Int> node in _grapf.Nodes)
             {
-                foreach (Node<Vector2Int> mine in _mines)
-                {
-                    if (mine != _currentNode && GetCurrentMineGold(mine.GetNodeID()) > 0)
-                    {
-                        Vector3 minePos = new Vector3(mine.GetCoordinate().x, mine.GetCoordinate().y);
-                        if (Vector3.Distance(transform.position, minePos) < distance)
-                        {
-                            distance = Vector3.Distance(transform.position, minePos);
-                            closestMineID = mine.GetNodeID();
-                        }
-                    }
-                }
-
-                if (closestMineID != -1)
-                    _destinationNode = _grapf.GetNode(closestMineID);
-                else
-                    SetDestination(RtsNodeType.UrbanCenter);
-            }
-            else
-            {
-                SetDestination(RtsNodeType.UrbanCenter);
+                if (node.GetCoordinate() == temp)
+                    _destinationNode = node;
             }
         }
 

@@ -144,10 +144,13 @@ namespace _1Parcial_RTS.RTS_Entities.Caravan
             _caravanFsm.SetTransition(CaravanBehaviours.Walk, CaravanFlags.OnMineReach, CaravanBehaviours.Deposit,
                 () => { Debug.Log("Depositando Morfi"); });
             _caravanFsm.SetTransition(CaravanBehaviours.Walk, CaravanFlags.OnUrbanCenterReach,
-                CaravanBehaviours.ReStock,
-                () => { Debug.Log("Cargando Morfi"); });
-            _caravanFsm.SetTransition(CaravanBehaviours.ReStock, CaravanFlags.OnMaxLoad, CaravanBehaviours.Walk,
-                () => { Debug.Log("Llevando Morfi"); });
+                CaravanBehaviours.Walk,
+                () =>
+                {
+                    Caravanfood = maxLoad;
+                    Debug.Log("Morfi Cargado");
+                    SetDestination(RtsNodeType.Mine);
+                });
             _caravanFsm.SetTransition(CaravanBehaviours.Deposit, CaravanFlags.OnEmptyLoad, CaravanBehaviours.Walk,
                 () =>
                 {

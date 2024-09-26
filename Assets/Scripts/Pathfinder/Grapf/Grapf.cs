@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Pathfinder.Node;
+using UnityEngine;
 
 namespace Pathfinder.Grapf
 {
@@ -9,14 +10,18 @@ namespace Pathfinder.Grapf
         where TNodeType : INode, new()
     {
         public List<TNodeType> Nodes = new List<TNodeType>();
+        public int _grapfMaxWidth;
+        public int _grapfMaxHeight;
         private Func<List<TNodeType>> _grapfCrationBehaviour;
         private Action _addNodeNeighborsBehaviour;
         private int _currentNodeId = 0;
 
-        public void SetgrapfParameters(Func<List<TNodeType>> grapfCrationMethod, Action addNodeNeighborsBehaviour)
+        public void SetgrapfParameters(Func<List<TNodeType>> grapfCrationMethod, Action addNodeNeighborsBehaviour,int grapfMaxWidth,int grapfMaxHeight)
         {
             _grapfCrationBehaviour = grapfCrationMethod;
             _addNodeNeighborsBehaviour = addNodeNeighborsBehaviour;
+            _grapfMaxWidth = grapfMaxWidth;
+            _grapfMaxHeight = grapfMaxHeight;
         }
 
         public void InitGrapf()
@@ -53,6 +58,7 @@ namespace Pathfinder.Grapf
 
             return new TNodeType();
         }
+        
 
         public TNodeType GetNode(RtsNodeType nodeType)
         {

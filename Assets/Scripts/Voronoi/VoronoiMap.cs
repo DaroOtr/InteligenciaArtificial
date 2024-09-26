@@ -14,18 +14,16 @@ namespace Voronoi
         private Grapf<Node<Vector2Int>> _grapf = new Grapf<Node<Vector2Int>>();
         private int _grapfMaxWidth;
         private int _grapfMaxHeight;
-        private int _maxMineCount;
         Vector3 mid;
 
         List<Vector3> vertex = new List<Vector3>();
 
         List<Side> aux;
 
-        public void InitVoronoid(int grapfMaxWidth, int grapfMaxHeight, int maxMineCount, Grapf<Node<Vector2Int>> grapf)
+        public void InitVoronoid(int grapfMaxWidth, int grapfMaxHeight, Grapf<Node<Vector2Int>> grapf)
         {
             _grapfMaxWidth = grapfMaxWidth;
             _grapfMaxHeight = grapfMaxHeight;
-            _maxMineCount = maxMineCount;
             _grapf = grapf;
 
             vertex.Add(new Vector3(grapfMaxWidth, grapfMaxHeight, 0));
@@ -48,6 +46,21 @@ namespace Voronoi
                         GetSide(mines[i], mines[j]);
                 }
             }
+        }
+        
+        public Vector2? GetClosestInterestPoint(Vector3 point)
+        {
+            PolygonCutter polygonCutter = new PolygonCutter();
+
+            foreach (MinesHolder mine in mines)
+            {
+                if (polygonCutter.IsPointInPolygon(point, mine.poligon))
+                {
+                    return mine.position;
+                }
+            }
+
+            return null;
         }
 
         public void ReCalculateVoronoiMap()

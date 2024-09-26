@@ -59,7 +59,6 @@ namespace _1Parcial_RTS.RTS_Entities.MIner.MinerStates
                 }
                 
                 _currentTime += delta;
-                Debug.LogWarning("_getCurrentGold.Invoke()  + " + _getCurrentGold.Invoke() );
             });
             
             behaviours.SetTransitionBehaviour(() =>
