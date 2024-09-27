@@ -19,6 +19,10 @@ namespace Pathfinder.Grapf
         public int _mineCount { get; private set; }
 
         private bool _isGrapfInitialized = false;
+        
+        [SerializeField] private GameObject terrainPrefab;
+        [SerializeField] private GameObject urbancenterPrefab;
+        [SerializeField] private GameObject minePrefab;
 
         public void SetGrapfCreationParams(int grapfWidth, int grapfHeight, int nodeSeparation, int mineCount)
         {
@@ -92,6 +96,7 @@ namespace Pathfinder.Grapf
             }
 
             SetInitialNodes();
+            DrawGrapf();
             _isGrapfInitialized = true;
         }
 
@@ -121,6 +126,38 @@ namespace Pathfinder.Grapf
                 if (node.GetCoordinate().x == halfWidth && node.GetCoordinate().y == halfHeight)
                     node.SetNodeType(RtsNodeType.UrbanCenter);
             }
+        }
+        
+        private void DrawGrapf()
+        {
+            foreach (Node<Vector2Int> node in Grapf.Nodes)
+            {
+                Vector3 nodeCordinates = new Vector3(node.GetCoordinate().x * _nodeSeparation,
+                    node.GetCoordinate().y * _nodeSeparation);
+
+                switch (node)
+                {
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.NormalTerrain):
+                        Instantiate(terrainPrefab, nodeCordinates, Quaternion.identity);
+                        break;
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.DificultTerrain):
+                        Gizmos.color = Color.Lerp(Color.green, Color.yellow, 0.7f);
+                        break;
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.UrbanCenter):
+                        Instantiate(urbancenterPrefab, nodeCordinates, Quaternion.identity);
+                        break;
+                    case var _ when node.GetNodeType().Equals(RtsNodeType.Mine):
+                        Instantiate(minePrefab, nodeCordinates, Quaternion.identity);
+                        break;
+                    default:
+                        if (node.IsBloqued())
+                            Gizmos.color = Color.red;
+                        break;
+                }
+
+
+            }
+
         }
 
         private void OnDrawGizmos()

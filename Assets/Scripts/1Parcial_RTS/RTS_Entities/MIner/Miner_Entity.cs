@@ -306,8 +306,8 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
 
         private void GetClosestMine()
         {
+            voronoiMap.ReCalculateVoronoiMap();
             Vector2? temp = voronoiMap.GetClosestInterestPoint(transform.position);
-            Debug.Log("temp " + temp);
             foreach (Node<Vector2Int> node in _grapf.Nodes)
             {
                 if (node.GetCoordinate() == temp)
@@ -332,7 +332,13 @@ namespace _1Parcial_RTS.RTS_Entities.MIner
             if (isminerInitialized)
             {
                 _minerFsm.Tick();
+                
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            voronoiMap.OnDrawGizmos();
         }
     }
 }

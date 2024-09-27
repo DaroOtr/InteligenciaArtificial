@@ -9,12 +9,10 @@ namespace Voronoi
 {
     public class VoronoiMap
     {
-        private List<Vector3> nodes = new List<Vector3>();
         private List<MinesHolder> mines = new List<MinesHolder>();
         private Grapf<Node<Vector2Int>> _grapf = new Grapf<Node<Vector2Int>>();
         private int _grapfMaxWidth;
         private int _grapfMaxHeight;
-        Vector3 mid;
 
         List<Vector3> vertex = new List<Vector3>();
 
@@ -123,8 +121,6 @@ namespace Voronoi
             {
                 Vector3 current = new Vector3(vertex[i].x, vertex[i].y);
                 Vector3 next = new Vector3(vertex[(i + 1) % vertex.Count].x, vertex[(i + 1) % vertex.Count].y);
-                //Vector3 current = vertex[i];
-                //Vector3 next = vertex[(i + 1) % vertex.Count];
                 Gizmos.DrawLine(current, next);
             }
 

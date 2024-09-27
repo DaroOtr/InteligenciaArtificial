@@ -58,14 +58,6 @@ namespace Voronoi
                 {
                     mine.poligon = new Poligon(polygon2);
                 }
-                else
-                {
-                    Debug.LogError("POR FAVOR NO SALTES");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"No se encontraron intersecciones o el poligono no fue cortado correctamente. {intersections.Count}");
             }
         }
 
