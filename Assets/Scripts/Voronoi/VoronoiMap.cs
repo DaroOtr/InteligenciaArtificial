@@ -105,6 +105,9 @@ namespace Voronoi
 
         public void OnDrawGizmos()
         {
+#if UNITY_EDITOR
+            
+
             if (!Application.isPlaying)
                 return;
 
@@ -169,6 +172,7 @@ namespace Voronoi
             //        (i + 1).ToString(),
             //        style);
             //}
+#endif
         }
     }
 }

@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Parcial1_RTS.unity
+    guid: 83dec5179b144974dbdcb3d46774e95e
   m_configObjects: {}
