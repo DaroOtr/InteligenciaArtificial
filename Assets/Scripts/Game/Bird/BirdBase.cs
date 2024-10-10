@@ -41,16 +41,17 @@ public class BirdBase : MonoBehaviour
     {
         if (state == State.Alive)
         {
-            Obstacle obstacle = ObstacleManager.Instance.GetNextObstacle(this.transform.position);
+            Obstacle obstacle = ObstacleManager.Instance.GetNextObstacle(transform.position);
+            Coin coin = CoinManager.Instance.GetNextCoin(transform.position);
 
             if (obstacle == null)
                 return;
 
-            OnThink(dt, birdBehaviour, obstacle);
+            OnThink(dt, birdBehaviour, obstacle,coin);
 
             birdBehaviour.UpdateBird(dt);
 
-            if (this.transform.position.y > 5f || this.transform.position.y < -5f || ObstacleManager.Instance.IsColliding(this.transform.position))
+            if (transform.position.y > 5f || transform.position.y < -5f || ObstacleManager.Instance.IsColliding(transform.position))
             {
                 OnDead();
                 state = State.Dead;
@@ -63,7 +64,7 @@ public class BirdBase : MonoBehaviour
 
     }
 
-    protected virtual void OnThink(float dt, BirdBehaviour birdBehaviour, Obstacle obstacle)
+    protected virtual void OnThink(float dt, BirdBehaviour birdBehaviour, Obstacle obstacle,Coin coin)
     {
 
     }

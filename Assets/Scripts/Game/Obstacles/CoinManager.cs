@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.Search;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class CoinManager : MonoBehaviour
 {
-    const float DISTANCE_BETWEEN_OBSTACLES = 6f;
-    const float HEIGHT_RANDOM = 3f;
+    const float DISTANCE_BETWEEN_OBSTACLES = 8f;
+    const float HEIGHT_RANDOM = 5f;
     const int MIN_COUNT = 3;
     public GameObject prefab;
     Vector3 pos = new Vector3(DISTANCE_BETWEEN_OBSTACLES, 0, 0);
@@ -56,6 +60,7 @@ public class CoinManager : MonoBehaviour
     public bool IsColliding(Vector3 pos)
     {
         Collider2D collider = Physics2D.OverlapBox(pos, new Vector2(0.3f, 0.3f), 0);
+        
 
         if (collider != null)
             return true;
@@ -79,7 +84,7 @@ public class CoinManager : MonoBehaviour
         pos.x += DISTANCE_BETWEEN_OBSTACLES;
         pos.y = Random.Range(-HEIGHT_RANDOM, HEIGHT_RANDOM);
         GameObject go = Instantiate(prefab, pos, Quaternion.identity);
-        go.transform.SetParent(this.transform, false);
+        go.transform.SetParent(transform, false);
         Coin coin = go.GetComponent<Coin>();
         coin.OnDestroy += OnObstacleDestroy;
         coins.Add(coin);

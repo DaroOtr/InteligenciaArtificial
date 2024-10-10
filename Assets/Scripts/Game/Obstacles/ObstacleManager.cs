@@ -56,7 +56,6 @@ public class ObstacleManager : MonoBehaviour
     public bool IsColliding(Vector3 pos)
     {
         Collider2D collider = Physics2D.OverlapBox(pos, new Vector2(0.3f, 0.3f), 0);
-
         if (collider != null)
             return true;
 

@@ -13,8 +13,8 @@ public class BirdBehaviour : MonoBehaviour
     public void Reset()
     {
         speed = Vector3.zero;
-        this.transform.position = Vector3.zero;
-        this.transform.rotation = Quaternion.identity;
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
     }
 
     public void Flap()
@@ -30,10 +30,10 @@ public class BirdBehaviour : MonoBehaviour
         newSpeed.x = MOVEMENT_SPEED;
         newSpeed.y -= GRAVITY * dt;
         speed = newSpeed;
+        
+        transform.rotation = Quaternion.AngleAxis(speed.y * 5f, Vector3.forward);
 
-        this.transform.rotation = Quaternion.AngleAxis(speed.y * 5f, Vector3.forward);
-
-        this.transform.position += speed * dt;
+        transform.position += speed * dt;
     }
 
 }

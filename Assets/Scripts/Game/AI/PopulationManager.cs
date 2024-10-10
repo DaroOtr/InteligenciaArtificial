@@ -4,6 +4,7 @@ using UnityEngine;
 public class PopulationManager : MonoBehaviour
 {
     public GameObject BirdPrefab;
+    public GameObject BirdDebugPrefab;
     public int PopulationCount = 40;
     public int IterationCount = 1;
 
@@ -26,25 +27,13 @@ public class PopulationManager : MonoBehaviour
 
     bool isRunning = false;
 
-    public int generation
-    {
-        get; private set;
-    }
+    public int generation { get; private set; }
 
-    public float bestFitness
-    {
-        get; private set;
-    }
+    public float bestFitness { get; private set; }
 
-    public float avgFitness
-    {
-        get; private set;
-    }
+    public float avgFitness { get; private set; }
 
-    public float worstFitness
-    {
-        get; private set;
-    }
+    public float worstFitness { get; private set; }
 
     private float GetBestFitness()
     {
@@ -90,7 +79,7 @@ public class PopulationManager : MonoBehaviour
 
         BirdBase bird = populationGOs[0];
         Genome bestGenome = population[0];
-        for (int i = 0; i < population.Count; i++)
+        for (int i = 0; i < population.Count - 1; i++)
         {
             if (populationGOs[i].state == BirdBase.State.Alive && population[i].fitness > bestGenome.fitness)
             {
@@ -196,7 +185,10 @@ public class PopulationManager : MonoBehaviour
             brains.Add(brain);
 
             population.Add(genome);
-            populationGOs.Add(CreateBird(genome, brain));
+            if (i == 0)
+                populationGOs.Add(CreateBird(genome, brain, BirdDebugPrefab));
+            else
+                populationGOs.Add(CreateBird(genome, brain, BirdPrefab));
         }
     }
 
@@ -218,8 +210,8 @@ public class PopulationManager : MonoBehaviour
     private void Epoch()
     {
         CameraFollow.Instance?.Reset();
-        ObstacleManager.Instance?.Reset();
-        CoinManager.Instance?.Reset();
+        ObstacleManager.Instance.Reset();
+        CoinManager.Instance.Reset();
         BackgroundManager.Instance?.Reset();
 
         generation++;
@@ -240,7 +232,6 @@ public class PopulationManager : MonoBehaviour
             brain.SetWeights(newGenomes[i].genome);
             populationGOs[i].SetBrain(newGenomes[i], brain);
         }
-
     }
 
     private void FixedUpdate()
@@ -273,10 +264,10 @@ public class PopulationManager : MonoBehaviour
         }
     }
 
-    private BirdBase CreateBird(Genome genome, NeuralNetwork brain)
+    private BirdBase CreateBird(Genome genome, NeuralNetwork brain, GameObject prefab)
     {
         Vector3 position = Vector3.zero;
-        GameObject go = Instantiate<GameObject>(BirdPrefab, position, Quaternion.identity);
+        GameObject go = Instantiate(prefab, position, Quaternion.identity);
         BirdBase b = go.GetComponent<BirdBase>();
         b.SetBrain(genome, brain);
         return b;
@@ -291,5 +282,4 @@ public class PopulationManager : MonoBehaviour
         population.Clear();
         brains.Clear();
     }
-
 }
