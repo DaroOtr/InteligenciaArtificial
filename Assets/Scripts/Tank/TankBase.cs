@@ -40,6 +40,10 @@ public class TankBase : MonoBehaviour
     {
         return goodMine == mine;
     }
+    protected bool IsBadMine(GameObject mine)
+    {
+        return badMine == mine;
+    }
 
     protected Vector3 GetDirToMine(GameObject mine)
     {
@@ -56,7 +60,7 @@ public class TankBase : MonoBehaviour
         Vector3 pos = this.transform.position;
         float rotFactor = Mathf.Clamp((rightForce - leftForce), -1.0f, 1.0f);
         this.transform.rotation *= Quaternion.AngleAxis(rotFactor * RotSpeed * dt, Vector3.up);
-        pos += this.transform.forward * Mathf.Abs(rightForce + leftForce) * 0.5f * Speed * dt;
+        pos += this.transform.forward * (Mathf.Abs(rightForce + leftForce) * 0.5f * Speed * dt);
         this.transform.position = pos;
     }
 
