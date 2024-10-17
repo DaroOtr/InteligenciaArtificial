@@ -49,3 +49,33 @@ Cashe Miss : an event in which a system or application makes a request to retrie
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 Flocking 
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Redes Neurinales
+
+    Las Neuronas dan valores entre -1 y 1
+    El bias se aplica a cada neurona pero es comun a todas las neuronas del cerebro
+     
+    La funcion sigmoide es lo que se conoce como funcion de activacion , modifica la funcion lineal que da la neurona para que te de mejor resultado 
+        y para que las neuronas no convergan en una sola funcion lineal
+     
+    (Buscar Derivada de arcotangente [Curiosidad nomas])
+    
+-----------------------------------------------------------------------------------------------------------------------------------------
+Por definicion una red neuronal es un hypergrafo hyperconexo
+
+Redes neuronales de profundidad constante (Todas las Hiden layers tienen la misma cantidad de neuronas)
+Queremos que un red neuronal convolucion (Convolucione) en un dato que agarra todos los imputs y hace algo con eso (Ej : Generador de imagenes)
+Una devolucion es cuando de un dato podes deducir muchas cosas (Por ejemplo tiro un raycast y tengo que con ese dato ver si es aliado o no , si disparo , etc)
+Todas las neuronas de un layer si o si se tienen que conectar con todas las neuronas del proximo layer
+
+Tenemos dos formas de ver como hacer la red neuronal 
+    Overkill
+    Vamos viendo
+    
+hay que hacer que con la funcion de epoch si hace (X cantidad de generaciones) que el avg firness no cambia los haces evolucionar
+Para evolucioanr le damos mas layers o mas neuronas por layers
+
+Cruce de genoma genetico
