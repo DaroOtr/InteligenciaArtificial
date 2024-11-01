@@ -84,8 +84,7 @@ public class NeuralNetwork
 
 			for (int j = 0; j < ws.Length; j++)
 			{
-				weights[id] = ws[j];
-				id++;
+				weights[id++] = ws[j];
 			}
 		}
 
@@ -97,10 +96,7 @@ public class NeuralNetwork
 		float[] outputs = null;
 
 		for (int i = 0; i < layers.Count; i++)
-		{
 			outputs = layers[i].Synapsis(inputs);
-			inputs = outputs;
-		}
 
 		return outputs;
 	}

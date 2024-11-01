@@ -7,8 +7,8 @@ public class NeuronLayer
 	private float[] outputs;
 	private int totalWeights = 0;
 	private int inputsCount = 0;
-	private float bias = 1;
-	private	float p = 0.5f;
+	private float bias;
+	private	float p;
 
 	public int NeuronsCount
 	{

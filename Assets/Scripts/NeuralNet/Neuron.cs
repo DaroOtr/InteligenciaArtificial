@@ -43,7 +43,7 @@ public class Neuron
 	{
 		for (int i = 0; i < weights.Length; i++)
 		{
-			this.weights[i] = newWeights[i + fromId];
+			weights[i] = newWeights[i + fromId];
 		}
 
 		return fromId + weights.Length;
