@@ -208,8 +208,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 366629296}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0.019822178, y: -0.019313404, z: -0.00056521955, w: -0.99961686}
+  m_LocalPosition: {x: 19.010698, y: 26.728575, z: -61.67024}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -261,7 +261,7 @@ MonoBehaviour:
   scavengerMaterial: {fileID: 2100000, guid: 676a3347069d0c041a1c7a6926db74b3, type: 2}
   filePath: /Saves/SaveFile
   fileExtension: Quichineta
-  fileToLoad: /Saves/SaveFile14
+  fileToLoad: /Saves/SaveFile22
 --- !u!4 &462780930
 Transform:
   m_ObjectHideFlags: 0
