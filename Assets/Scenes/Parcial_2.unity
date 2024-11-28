@@ -249,8 +249,8 @@ MonoBehaviour:
   hervivoreCount: 50
   carnivoreCount: 25
   scavengerCount: 25
-  loadOnActive: 1
-  turnCount: 200
+  loadOnActive: 0
+  turnCount: 400
   currentGeneration: 0
   isSimulationActive: 1
   CubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
@@ -260,8 +260,8 @@ MonoBehaviour:
   carnivoreMaterial: {fileID: 2100000, guid: 68b3847135df3924f80961e8e4f260ab, type: 2}
   scavengerMaterial: {fileID: 2100000, guid: 676a3347069d0c041a1c7a6926db74b3, type: 2}
   filePath: /Saves/SaveFile
-  fileExtension: Quichineta
-  fileToLoad: /Saves/SaveFile22
+  fileExtension: Quichineta2
+  fileToLoad: /Saves/SaveFile1
 --- !u!4 &462780930
 Transform:
   m_ObjectHideFlags: 0
