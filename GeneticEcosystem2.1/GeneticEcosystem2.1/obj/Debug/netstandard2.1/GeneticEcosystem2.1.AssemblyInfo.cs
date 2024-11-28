@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GeneticEcosystem2.1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+72580b774eafec8d116d39b9da0ef5bc5ccda041")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8bd958edc2dbf2191610ba7525af0a28d7d3d382")]
 [assembly: System.Reflection.AssemblyProductAttribute("GeneticEcosystem2.1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GeneticEcosystem2.1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

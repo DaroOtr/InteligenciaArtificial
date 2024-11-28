@@ -17,13 +17,13 @@ public class FSM<EnumState, EnumFlag>
 
     private (int destinationState, Action onTransition)[,] transition;
 
-    public BehaivioursAction GetCurrentStateOnEnterBehaviours => behaviour[currentState].
+    public BehaviourActions GetCurrentStateOnEnterBehaviours => behaviour[currentState].
         GetOnEnterBehaviours(behaviourOnEnterParameters[currentState]?.Invoke());
 
-    public BehaivioursAction GetCurrentStateTickBehaviours => behaviour[currentState].
+    public BehaviourActions GetCurrentStateTickBehaviours => behaviour[currentState].
         GetTickBehaviours(behaviourTickParameters[currentState]?.Invoke());
 
-    public BehaivioursAction GetCurrentStateOnExitBehaviours => behaviour[currentState].
+    public BehaviourActions GetCurrentStateOnExitBehaviours => behaviour[currentState].
         GetOnExitBehaviours(behaviourOnExitParameters[currentState]?.Invoke());
 
     public FSM()
@@ -95,42 +95,42 @@ public class FSM<EnumState, EnumFlag>
         }
     }
 
-    public void ExecuteBehaviours(BehaivioursAction behaivioursAction)
+    public void ExecuteBehaviours(BehaviourActions behaviourActions)
     {
-        if (behaivioursAction.Equals(default(BehaivioursAction)))
+        if (behaviourActions.Equals(default(BehaviourActions)))
             return;
 
         int executionOrder = 0;
 
-        while ((behaivioursAction.MainThreadBahaviours != null && behaivioursAction.MainThreadBahaviours.Count > 0) ||
-                (behaivioursAction.MultiThreadBehaviours != null && behaivioursAction.MultiThreadBehaviours.Count > 0))
+        while ((behaviourActions.MainThreadBahaviours != null && behaviourActions.MainThreadBahaviours.Count > 0) ||
+                (behaviourActions.MultiThreadBehaviours != null && behaviourActions.MultiThreadBehaviours.Count > 0))
         {
             Task multithreadeableBehaviours = new Task(() =>
             {
-                if (behaivioursAction.MultiThreadBehaviours != null)
+                if (behaviourActions.MultiThreadBehaviours != null)
                 {
-                    if (behaivioursAction.MultiThreadBehaviours.ContainsKey(executionOrder))
+                    if (behaviourActions.MultiThreadBehaviours.ContainsKey(executionOrder))
                     {
-                        Parallel.ForEach(behaivioursAction.MultiThreadBehaviours[executionOrder], parallelOptions, (behaviour) =>
+                        Parallel.ForEach(behaviourActions.MultiThreadBehaviours[executionOrder], parallelOptions, (behaviour) =>
                         {
                             behaviour?.Invoke();
                         });
-                        behaivioursAction.MultiThreadBehaviours.TryRemove(executionOrder, out _);
+                        behaviourActions.MultiThreadBehaviours.TryRemove(executionOrder, out _);
                     }
                 }
             });
 
             multithreadeableBehaviours.Start();
 
-            if (behaivioursAction.MainThreadBahaviours != null)
+            if (behaviourActions.MainThreadBahaviours != null)
             {
-                if (behaivioursAction.MainThreadBahaviours.ContainsKey(executionOrder))
+                if (behaviourActions.MainThreadBahaviours.ContainsKey(executionOrder))
                 {
-                    foreach (Action behaviours in behaivioursAction.MainThreadBahaviours[executionOrder])
+                    foreach (Action behaviours in behaviourActions.MainThreadBahaviours[executionOrder])
                     {
                         behaviours?.Invoke();
                     }
-                    behaivioursAction.MainThreadBahaviours.Remove(executionOrder);
+                    behaviourActions.MainThreadBahaviours.Remove(executionOrder);
                 }
             }
 
@@ -139,7 +139,7 @@ public class FSM<EnumState, EnumFlag>
             executionOrder++;
         }
 
-        behaivioursAction.TransitionBehaviours?.Invoke();
+        behaviourActions.TransitionBehaviours?.Invoke();
     }
 
 }

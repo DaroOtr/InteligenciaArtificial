@@ -6,17 +6,17 @@ namespace herbivorous
     {
         private int lives;
 
-        public override BehaivioursAction GetOnEnterBehaviours(params object[] parameters)
+        public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
             return default;
         }
 
-        public override BehaivioursAction GetOnExitBehaviours(params object[] parameters)
+        public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
         {
             return default;
         }
 
-        public override BehaivioursAction GetTickBehaviours(params object[] parameters)
+        public override BehaviourActions GetTickBehaviours(params object[] parameters)
         {
             return default;
         }

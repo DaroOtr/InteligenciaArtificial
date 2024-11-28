@@ -10,21 +10,21 @@ namespace carnivorous
     {
         private NeuralNetwork brain;
         private Vector2 position;
-        public override BehaivioursAction GetOnEnterBehaviours(params object[] parameters)
+        public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
             brain = parameters[0] as NeuralNetwork;
             return default;
         }
 
-        public override BehaivioursAction GetOnExitBehaviours(params object[] parameters)
+        public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
         {
             brain.ApplyFitness();
             return default;
         }
 
-        public override BehaivioursAction GetTickBehaviours(params object[] parameters)
+        public override BehaviourActions GetTickBehaviours(params object[] parameters)
         {
-            BehaivioursAction behaviour = new BehaivioursAction();
+            BehaviourActions behaviour = new BehaviourActions();
 
             float[] outputs = parameters[0] as float[];
             position = (Vector2)parameters[1];

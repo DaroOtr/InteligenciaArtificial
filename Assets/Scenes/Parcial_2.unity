@@ -215,6 +215,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &462780928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 462780930}
+  - component: {fileID: 462780929}
+  m_Layer: 0
+  m_Name: Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &462780929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462780928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a503dcc94a7fafb459fc907c99dfd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridSizeX: 50
+  gridSizeY: 50
+  hervivoreCount: 50
+  carnivoreCount: 25
+  scavengerCount: 25
+  loadOnActive: 1
+  turnCount: 200
+  currentGeneration: 0
+  isSimulationActive: 1
+  CubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  plantMaterial: {fileID: 2100000, guid: d357d290af198f3429db8c2ab85208f9, type: 2}
+  deadHerbivoreMaterial: {fileID: 2100000, guid: 6e76c2c077e25db4694b9ed7d3481066, type: 2}
+  herbivoreMaterial: {fileID: 2100000, guid: 818495e47009b904ebdd0024166e1188, type: 2}
+  carnivoreMaterial: {fileID: 2100000, guid: 68b3847135df3924f80961e8e4f260ab, type: 2}
+  scavengerMaterial: {fileID: 2100000, guid: 676a3347069d0c041a1c7a6926db74b3, type: 2}
+  filePath: /Saves/SaveFile
+  fileExtension: Quichineta
+  fileToLoad: /Saves/SaveFile14
+--- !u!4 &462780930
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462780928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.39467, y: 29.211765, z: -47.722134}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1911540427
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,3 +377,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 366629299}
   - {fileID: 1911540429}
+  - {fileID: 462780930}

@@ -16,7 +16,7 @@ namespace herbivorous
         private float positiveHalf;
         private float negativeHalf;
 
-        public override BehaivioursAction GetOnEnterBehaviours(params object[] parameters)
+        public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
             brain = parameters[0] as NeuralNetwork;
             positiveHalf = Neuron.Sigmoid(0.5f, brain.p);
@@ -24,14 +24,14 @@ namespace herbivorous
             return default;
         }
 
-        public override BehaivioursAction GetOnExitBehaviours(params object[] parameters)
+        public override BehaviourActions GetOnExitBehaviours(params object[] parameters)
         {
             return default;
         }
 
-        public override BehaivioursAction GetTickBehaviours(params object[] parameters)
+        public override BehaviourActions GetTickBehaviours(params object[] parameters)
         {
-            BehaivioursAction behaviour = new BehaivioursAction();
+            BehaviourActions behaviour = new BehaviourActions();
 
             float[] outputs = parameters[0] as float[];
             position = (Vector2)parameters[1];
